@@ -1,4 +1,4 @@
-#tft-teamcomp-optimizer
+# tft-teamcomp-optimizer
 
 This project generates the most efficient team comps (synergy-wise) within a given amount of units available. It is adaptable different sets and will work between patches with minor changes. It takes ~24 hours to run as it has to generate and calculate almost 60 billion combinations, so be ready to leave your computer on over night.
 
