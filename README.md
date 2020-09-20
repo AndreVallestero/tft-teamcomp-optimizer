@@ -2,9 +2,9 @@
 
 This project generates the most efficient team comps (synergy-wise) within a given amount of units available. It is adaptable different sets and will work between patches with minor changes. It takes ~24 hours to run as it has to generate and calculate almost 60 billion combinations, so be ready to leave your computer on over night.
 
-It does not take into account in-game effects such as `chosen one` from TFT Set 4 or spatula items
+It does not take into account in-game effects such as `chosen one` from TFT Set 4 or spatula items.
 
-Here's some sample data from TFT Set 4.0
+Here's some sample data from TFT Set 4.0:
 
 ### Most synergies for 8 units
 
