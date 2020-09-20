@@ -53,7 +53,7 @@ champ_dict = {
     'Zilean': (CULTIST, MYSTIC),
 
     'Aatrox': (CULTIST, VANGUARD),
-    'Ahari': (SPIRIT, MAGE),
+    'Ahri': (SPIRIT, MAGE),
     'Akali': (NINJA, ASSASSIN),
     'Annie': (FORTUNE, MAGE),
     'Aphelios': (MOONLIGHT, HUNTER),

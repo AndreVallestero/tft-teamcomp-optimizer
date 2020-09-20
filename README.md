@@ -6,6 +6,76 @@ It does not take into account in-game effects such as `chosen one` from TFT Set 
 
 Here's some sample data from TFT Set 4.0:
 
+### Most synergies for 9 units
+
+- 21: Azir, Lee Sin, Sett, Irelia, Janna, Jarvan, Shen, Vi, Yasuo
+- 21: Azir, Lee Sin, Cassiopeia, Fiora, Garen, Irelia, Jarvan, Shen, Thresh
+- 21: Azir, Lee Sin, Cassiopeia, Fiora, Irelia, Jarvan, Nidalee, Shen, Vayne
+- 21: Azir, Lee Sin, Cassiopeia, Irelia, Katarina, Riven, Shen, Talon, Xin Zhao
+- 21: Azir, Lee Sin, Fiora, Irelia, Janna, Jarvan, Katarina, Shen, Talon
+- 21: Azir, Lee Sin, Garen, Irelia, Janna, Jarvan, Jax, Shen, Wukong
+- 21: Azir, Lee Sin, Garen, Irelia, Janna, Riven, Shen, Thresh, Xin Zhao
+- 21: Azir, Lee Sin, Irelia, Janna, Jarvan, Jax, Shen, Vi, Warwick
+- 21: Azir, Lee Sin, Irelia, Janna, Nidalee, Riven, Shen, Vayne, Xin Zhao
+- 21: Azir, Sett, Irelia, Janna, Jarvan, Jax, Shen, Vi, Yasuo
+- 21: Azir, Sett, Irelia, Janna, Jarvan, Shen, Warwick, Xin Zhao, Yasuo
+- 21: Azir, Yone, Aphelios, Irelia, Janna, Jarvan, Shen, Vi, Warwick
+- 21: Azir, Yone, Ashe, Irelia, Janna, Jarvan, Shen, Vi, Warwick
+- 21: Azir, Yone, Irelia, Janna, Jarvan, Kindred, Shen, Vi, Warwick
+- 21: Azir, Yone, Irelia, Janna, Jarvan, Kindred, Vi, Warwick, Yuumi
+- 21: Azir, Yone, Irelia, Jarvan, Kindred, Shen, Vi, Warwick, Yuumi
+- 21: Azir, Ahari, Irelia, Janna, Jarvan, Kindred, Shen, Vi, Warwick
+- 21: Azir, Cassiopeia, Fiora, Garen, Irelia, Jarvan, Jax, Shen, Thresh
+- 21: Azir, Cassiopeia, Fiora, Garen, Irelia, Riven, Shen, Wukong, Xin Zhao
+- 21: Azir, Cassiopeia, Fiora, Irelia, Jarvan, Jax, Nidalee, Shen, Vayne
+- 21: Azir, Cassiopeia, Fiora, Irelia, Jarvan, Shen, Thresh, Wukong, Xin Zhao
+- 21: Azir, Cassiopeia, Fiora, Irelia, Riven, Shen, Vi, Warwick, Xin Zhao
+- 21: Azir, Cassiopeia, Garen, Irelia, Jarvan, Lux, Morgana, Shen, Thresh
+- 21: Azir, Cassiopeia, Garen, Irelia, Katarina, Riven, Shen, Talon, Wukong
+- 21: Azir, Cassiopeia, Irelia, Jarvan, Katarina, Shen, Talon, Thresh, Wukong
+- 21: Azir, Cassiopeia, Irelia, Jarvan, Lux, Morgana, Nidalee, Shen, Vayne
+- 21: Azir, Cassiopeia, Irelia, Jax, Katarina, Riven, Shen, Talon, Xin Zhao
+- 21: Azir, Cassiopeia, Irelia, Katarina, Riven, Shen, Talon, Vi, Warwick
+- 21: Azir, Fiora, Irelia, Janna, Jarvan, Jax, Katarina, Shen, Talon
+- 21: Azir, Fiora, Irelia, Janna, Jarvan, Lux, Morgana, Shen, Xin Zhao
+- 21: Azir, Fiora, Irelia, Jarvan, Kindred, Shen, Vi, Warwick, Yuumi
+- 21: Azir, Fiora, Irelia, Jarvan, Kindred, Shen, Warwick, Xin Zhao, Yuumi 
+
+Without 5 costs:
+
+- 21: Ahri, Ashe, Irelia, Lulu, Maokai, Nami, Shen, Warwick, Yuumi
+- 21: Ahri, Ashe, Irelia, Lulu, Nami, Nunu, Shen, Warwick, Yuumi
+- 21: Ahri, Ashe, Irelia, Maokai, Nami, Shen, Veigar, Warwick, Yuumi
+- 21: Ahri, Ashe, Irelia, Nami, Nunu, Shen, Veigar, Warwick, Yuumi
+- 21: Ahri, Irelia, Janna, Kindred, Lulu, Maokai, Shen, Veigar, Warwick
+- 21: Ahri, Irelia, Janna, Kindred, Lulu, Nunu, Shen, Veigar, Warwick
+- 21: Aphelios, Diana, Irelia, Kindred, Shen, Sylas, Talon, Warwick, Yuumi
+- 21: Aphelios, Irelia, Kindred, Lissandra, Morgana, Shen, Sylas, Warwick, Yuumi
+- 21: Irelia, Kindred, Lulu, Maokai, Nami, Shen, Veigar, Warwick, Yuumi
+- 21: Irelia, Kindred, Lulu, Nami, Nunu, Shen, Veigar, Warwick, Yuumi
+- 20: Aatrox, Cassiopeia, Elise, Fiora, Irelia, Kalista, Riven, Shen, Wukong
+- 20: Aatrox, Cassiopeia, Elise, Irelia, Pyke, Riven, Shen, Talon, Wukong
+- 20: Aatrox, Cassiopeia, Fiora, Irelia, Jhin, Kalista, Shen, Vayne, Wukong
+- 20: Aatrox, Cassiopeia, Irelia, Jax, Kalista, Pyke, Shen, Talon, Thresh
+- 20: Aatrox, Cassiopeia, Irelia, Jhin, Pyke, Shen, Talon, Vayne, Wukong
+- 20: Aatrox, Elise, Irelia, Janna, Jax, Kalista, Riven, Shen, Thresh
+- 20: Aatrox, Elise, Irelia, Janna, Jhin, Riven, Shen, Vayne, Wukong
+- 20: Aatrox, Evelynn, Irelia, Janna, Kalista, Kayn, Shen, Wukong, Yasuo
+- 20: Aatrox, Fiora, Irelia, Janna, Kalista, Pyke, Shen, Talon, Wukong
+- 20: Aatrox, Irelia, Janna, Jax, Jhin, Kalista, Shen, Thresh, Vayne
+- 20: Ahri, Aphelios, Diana, Irelia, Shen, Sylas, Talon, Warwick, Yuumi
+- 20: Ahri, Aphelios, Irelia, Lissandra, Morgana, Shen, Sylas, Warwick, Yuumi
+- 20: Ahri, Ashe, Irelia, Janna, Kindred, Lulu, Shen, Veigar, Warwick
+- 20: Ahri, Ashe, Irelia, Kindred, Lulu, Maokai, Nami, Shen, Warwick
+- 20: Ahri, Ashe, Irelia, Kindred, Lulu, Nami, Nunu, Shen, Warwick
+- 20: Ahri, Ashe, Irelia, Kindred, Maokai, Nami, Shen, Veigar, Warwick
+- 20: Ahri, Ashe, Irelia, Kindred, Nami, Nunu, Shen, Veigar, Warwick
+- 20: Annie, Irelia, Katarina, Kindred, Shen, Tahm Kench, Talon, Warwick, Yuumi
+- 20: Aphelios, Cassiopeia, Diana, Irelia, Riven, Shen, Sylas, Talon, Warwick
+- 20: Aphelios, Cassiopeia, Diana, Irelia, Shen, Sylas, Talon, Thresh, Warwick
+- 20: Aphelios, Cassiopeia, Diana, Irelia, Shen, Sylas, Talon, Vayne, Warwick
+- 20: Aphelios, Cassiopeia, Irelia, Lissandra, Morgana, Riven, Shen, Sylas, Warwick 
+
 ### Most synergies for 8 units
 
 - 19: Azir, Lee Sin, Yone, Irelia, Janna, Jarvan, Shen, Xin Zhao
@@ -106,7 +176,7 @@ Without 5 costs:
 - 16: Sett, Yone, Irelia, Janna, Kindred, Shen, Warwick
 - 16: Sett, Yone, Irelia, Janna, Kindred, Warwick, Yuumi
 - 16: Sett, Yone, Irelia, Kindred, Shen, Warwick, Yuumi
-- 16: Sett, Ahari, Irelia, Janna, Kindred, Shen, Warwick
+- 16: Sett, Ahri, Irelia, Janna, Kindred, Shen, Warwick
 - 16: Sett, Fiora, Irelia, Kindred, Shen, Warwick, Yuumi
 - 16: Sett, Irelia, Janna, Kindred, Shen, Warwick, Yuumi
 - 16: Sett, Irelia, Kindred, Morgana, Shen, Warwick, Yuumi
@@ -130,11 +200,11 @@ Without 5 costs:
 - 16: Hecarim, Irelia, Janna, Maokai, Nunu, Shen, Wukong
 - 15: Aatrox, Cassiopeia, Fiora, Irelia, Jax, Shen, Thresh
 - 15: Aatrox, Cassiopeia, Irelia, Lux, Morgana, Shen, Thresh
-- 15: Ahari, Irelia, Janna, Kindred, Maokai, Shen, Warwick
-- 15: Ahari, Irelia, Janna, Kindred, Nunu, Shen, Warwick
-- 15: Ahari, Irelia, Janna, Kindred, Shen, Sylas, Warwick
-- 15: Ahari, Irelia, Janna, Kindred, Shen, Tahm Kench, Warwick
-- 15: Ahari, Irelia, Janna, Kindred, Shen, Vi, Warwick
+- 15: Ahri, Irelia, Janna, Kindred, Maokai, Shen, Warwick
+- 15: Ahri, Irelia, Janna, Kindred, Nunu, Shen, Warwick
+- 15: Ahri, Irelia, Janna, Kindred, Shen, Sylas, Warwick
+- 15: Ahri, Irelia, Janna, Kindred, Shen, Tahm Kench, Warwick
+- 15: Ahri, Irelia, Janna, Kindred, Shen, Vi, Warwick
 - 15: Akali, Aphelios, Diana, Jax, Sylas, Warwick, Yasuo
 - 15: Aphelios, Diana, Fiora, Jax, Sylas, Talon, Warwick
 - 15: Aphelios, Diana, Lux, Morgana, Sylas, Talon, Warwick
@@ -183,9 +253,9 @@ Without 5 costs:
 
 Without 5 costs:
 
-- 13: Ahari, Fiora, Irelia, Jax, Shen, Yuumi
-- 13: Ahari, Irelia, Janna, Kindred, Shen, Warwick
-- 13: Ahari, Irelia, Lux, Morgana, Shen, Yuumi
+- 13: Ahri, Fiora, Irelia, Jax, Shen, Yuumi
+- 13: Ahri, Irelia, Janna, Kindred, Shen, Warwick
+- 13: Ahri, Irelia, Lux, Morgana, Shen, Yuumi
 - 13: Akali, Garen, Jinx, Katarina, Nidalee, Sejuani
 - 13: Akali, Garen, Katarina, Sejuani, Tahm Kench, Vi
 - 13: Akali, Jinx, Katarina, Nidalee, Tahm Kench, Vi
@@ -281,7 +351,7 @@ Without 5 costs:
 - 11: Irelia, Janna, Shen, Vi, Warwick
 - 11: Irelia, Kindred, Shen, Warwick, Yuumi
 - 11: Irelia, Lux, Morgana, Shen, Yuumi
-- 10: Ahari, Ashe, Kindred, Lulu, Veigar
+- 10: Ahri, Ashe, Kindred, Lulu, Veigar
 - 10: Akali, Aphelios, Diana, Sylas, Warwick
 - 10: Akali, Irelia, Jax, Talon, Yasuo
 - 10: Cassiopeia, Fiora, Irelia, Shen, Yasuo
