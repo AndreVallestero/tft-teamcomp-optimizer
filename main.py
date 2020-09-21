@@ -51,6 +51,7 @@ champ_dict = {
     'Sett': (BOSS, BRAWLER),
     'Yone': (EXILE, ADEPT),
     'Zilean': (CULTIST, MYSTIC),
+    'Kayn': (TORMENTED, SHADE),
 
     'Aatrox': (CULTIST, VANGUARD),
     'Ahri': (SPIRIT, MAGE),
@@ -73,7 +74,6 @@ champ_dict = {
     'Jinx': (FORTUNE, SHARPSHOOTER),
     'Kalista': (CULTIST, DUELIST),
     'Katarina': (WARLORD, FORTUNE, ASSASSIN),
-    'Kayn': (TORMENTED, SHADE),
     'Kennen': (NINJA, KEEPER),
     'Kindred': (SPIRIT, HUNTER),
     'Lissandra': (MOONLIGHT, DAZZLER),
@@ -104,7 +104,7 @@ champ_dict = {
     'Zed': (NINJA, SHADE)
 }
 CHAMP_COUNT = len(champ_dict)
-
+PROGRESS_SEGS = 50
 CURR_COMB = MILESTONE = None
 
 def count_synergies(combination):
@@ -115,6 +115,10 @@ def count_synergies(combination):
     for champ_name in combination:
         for synergy in champ_dict[champ_name]:
             synergy_tally[synergy] += 1
+
+    # Force mage
+    #if synergy_tally[MAGE] < 3:
+    #    return 0
 
     synergy_sum += synergy_tally[CULTIST] // 3 * 3
     synergy_sum += synergy_tally[DIVINE] // 2 * 2
@@ -151,12 +155,12 @@ def count_synergies(combination):
 
     return synergy_sum
 
-for i in range(5, 11):
-    milestone_step = math.factorial(CHAMP_COUNT) // (math.factorial(i) * math.factorial(CHAMP_COUNT - i) * 20)
+for i in range(7, 11):
+    milestone_step = math.factorial(CHAMP_COUNT) // (math.factorial(i) * math.factorial(CHAMP_COUNT - i) * PROGRESS_SEGS)
     MILESTONE = milestone_step
     CURR_COMB = 0
 
-    print(f'\nCalculating synergies for {i} units\n+--------------------+\n|', end='')
+    print(f'\nCalculating synergies for {i} units\n+{"-"*PROGRESS_SEGS}+\n|', end='')
     best = heapq.nlargest(
         UNIT_COMBS,
         itertools.combinations(champ_dict.keys(), i),
