@@ -6,6 +6,43 @@ It does not take into account in-game effects such as `chosen one` from TFT Set 
 
 Here's some sample data from TFT Set 4.0:
 
+### Most synergies for 10 units
+
+Without 5 costs:
+
+- 23: Aphelios, Diana, Fiora, Irelia, Janna, Shen, Sylas, Talon, Warwick, Yasuo
+- 23: Aphelios, Fiora, Irelia, Janna, Lissandra, Morgana, Shen, Sylas, Warwick, Yasuo
+- 23: Aphelios, Irelia, Janna, Jax, Lissandra, Lux, Shen, Sylas, Warwick, Yasuo
+- 23: Ashe, Cassiopeia, Fiora, Hecarim, Irelia, Maokai, Shen, Thresh, Warwick, Yasuo
+- 23: Ashe, Cassiopeia, Fiora, Hecarim, Irelia, Nunu, Shen, Thresh, Warwick, Yasuo
+- 23: Ashe, Hecarim, Irelia, Janna, Jax, Maokai, Shen, Warwick, Wukong, Yasuo
+- 23: Ashe, Hecarim, Irelia, Janna, Jax, Nunu, Shen, Warwick, Wukong, Yasuo
+- 23: Irelia, Katarina, Kindred, Shen, Talon, Vi, Warwick, Xin Zhao, Yasuo, Yuumi
+- 22: Aatrox, Ahri, Evelynn, Irelia, Kayn, Nami, Shen, Twisted Fate, Wukong, Yuumi
+- 22: Aatrox, Ahri, Irelia, Kalista, Nami, Shen, Twisted Fate, Wukong, Yasuo, Yuumi
+- 22: Aatrox, Aphelios, Cassiopeia, Diana, Irelia, Shen, Sylas, Talon, Thresh, Warwick
+- 22: Aatrox, Aphelios, Cassiopeia, Irelia, Lissandra, Morgana, Shen, Sylas, Thresh, Warwick
+- 22: Aatrox, Aphelios, Irelia, Janna, Lissandra, Lux, Shen, Sylas, Warwick, Wukong
+- 22: Aatrox, Fiora, Garen, Irelia, Kindred, Shen, Vi, Warwick, Xin Zhao, Yuumi
+- 22: Aatrox, Garen, Irelia, Katarina, Kindred, Shen, Talon, Vi, Warwick, Yuumi
+- 22: Aatrox, Hecarim, Irelia, Janna, Jax, Kalista, Lulu, Shen, Twisted Fate, Veigar
+- 22: Aatrox, Irelia, Katarina, Kindred, Sejuani, Shen, Tahm Kench, Talon, Warwick, Yuumi
+- 22: Ahri, Annie, Ashe, Irelia, Janna, Kindred, Lulu, Maokai, Shen, Warwick
+- 22: Ahri, Annie, Ashe, Irelia, Janna, Kindred, Lulu, Nunu, Shen, Warwick
+- 22: Ahri, Annie, Ashe, Irelia, Janna, Kindred, Maokai, Shen, Veigar, Warwick
+- 22: Ahri, Annie, Ashe, Irelia, Janna, Kindred, Nunu, Shen, Veigar, Warwick
+- 22: Ahri, Aphelios, Ashe, Irelia, Lulu, Maokai, Nami, Shen, Warwick, Yuumi
+- 22: Ahri, Aphelios, Ashe, Irelia, Lulu, Nami, Nunu, Shen, Warwick, Yuumi
+- 22: Ahri, Aphelios, Ashe, Irelia, Maokai, Nami, Shen, Veigar, Warwick, Yuumi
+- 22: Ahri, Aphelios, Ashe, Irelia, Nami, Nunu, Shen, Veigar, Warwick, Yuumi
+- 22: Ahri, Aphelios, Irelia, Janna, Kindred, Lulu, Maokai, Shen, Veigar, Warwick
+- 22: Ahri, Aphelios, Irelia, Janna, Kindred, Lulu, Nunu, Shen, Veigar, Warwick
+- 22: Ahri, Ashe, Cassiopeia, Irelia, Kindred, Lulu, Maokai, Nami, Shen, Warwick
+- 22: Ahri, Ashe, Cassiopeia, Irelia, Kindred, Lulu, Nami, Nunu, Shen, Warwick
+- 22: Ahri, Ashe, Cassiopeia, Irelia, Kindred, Maokai, Nami, Shen, Veigar, Warwick
+- 22: Ahri, Ashe, Cassiopeia, Irelia, Kindred, Nami, Nunu, Shen, Veigar, Warwick
+- 22: Ahri, Ashe, Fiora, Irelia, Lulu, Shen, Veigar, Warwick, Yasuo, Yuumi
+
 ### Most synergies for 9 units
 
 - 21: Azir, Lee Sin, Sett, Irelia, Janna, Jarvan, Shen, Vi, Yasuo
@@ -24,7 +61,7 @@ Here's some sample data from TFT Set 4.0:
 - 21: Azir, Yone, Irelia, Janna, Jarvan, Kindred, Shen, Vi, Warwick
 - 21: Azir, Yone, Irelia, Janna, Jarvan, Kindred, Vi, Warwick, Yuumi
 - 21: Azir, Yone, Irelia, Jarvan, Kindred, Shen, Vi, Warwick, Yuumi
-- 21: Azir, Ahari, Irelia, Janna, Jarvan, Kindred, Shen, Vi, Warwick
+- 21: Azir, Ahri, Irelia, Janna, Jarvan, Kindred, Shen, Vi, Warwick
 - 21: Azir, Cassiopeia, Fiora, Garen, Irelia, Jarvan, Jax, Shen, Thresh
 - 21: Azir, Cassiopeia, Fiora, Garen, Irelia, Riven, Shen, Wukong, Xin Zhao
 - 21: Azir, Cassiopeia, Fiora, Irelia, Jarvan, Jax, Nidalee, Shen, Vayne
