@@ -46,12 +46,12 @@ champ_dict = {
     # Comment out 5 costs for more reliable comps
     'Azir': (WARLORD, KEEPER, EMPEROR),
     'Ezreal': (ELDERWOOD, DAZZLER),
+    'Kayn': (TORMENTED, SHADE),
     'Lee Sin': (DIVINE, DUELIST),
     'Lillia': (DUSK, MAGE),
     'Sett': (BOSS, BRAWLER),
     'Yone': (EXILE, ADEPT),
     'Zilean': (CULTIST, MYSTIC),
-    'Kayn': (TORMENTED, SHADE),
 
     'Aatrox': (CULTIST, VANGUARD),
     'Ahri': (SPIRIT, MAGE),
