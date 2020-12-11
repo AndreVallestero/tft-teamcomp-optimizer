@@ -44,14 +44,14 @@ VANGUARD = 25
 
 champ_dict = {
     # Comment out 5 costs for more reliable comps
-    'Azir': (WARLORD, KEEPER, EMPEROR),
-    'Ezreal': (ELDERWOOD, DAZZLER),
-    'Kayn': (TORMENTED, SHADE),
-    'Lee Sin': (DIVINE, DUELIST),
-    'Lillia': (DUSK, MAGE),
-    'Sett': (BOSS, BRAWLER),
-    'Yone': (EXILE, ADEPT),
-    'Zilean': (CULTIST, MYSTIC),
+    #'Azir': (WARLORD, KEEPER, EMPEROR),
+    #'Ezreal': (ELDERWOOD, DAZZLER),
+    #'Kayn': (TORMENTED, SHADE),
+    #'Lee Sin': (DIVINE, DUELIST),
+    #'Lillia': (DUSK, MAGE),
+    #'Sett': (BOSS, BRAWLER),
+    #'Yone': (EXILE, ADEPT),
+    #'Zilean': (CULTIST, MYSTIC),
 
     'Aatrox': (CULTIST, VANGUARD),
     'Ahri': (SPIRIT, MAGE),
@@ -91,6 +91,7 @@ champ_dict = {
     'Sylas': (MOONLIGHT, BRAWLER),
     'Tahm Kench': (FORTUNE, BRAWLER),
     'Talon': (ENLIGHTENED, ASSASSIN),
+    'Teemo': (SPIRIT, SHARPSHOOTER),
     'Thresh': (DUSK, VANGUARD),
     'Twisted Fate': (CULTIST, MAGE),
     'Vayne': (DUSK, SHARPSHOOTER),
@@ -116,9 +117,19 @@ def count_synergies(combination):
         for synergy in champ_dict[champ_name]:
             synergy_tally[synergy] += 1
 
-    # Force mage
-    #if synergy_tally[MAGE] < 3:
+    CURR_COMB += 1
+    if CURR_COMB >= MILESTONE:
+        MILESTONE += milestone_step
+        print('=', end='', flush=True)
+
+    # Force Teemo
+    #if synergy_tally[SHARPSHOOTER] < 4 or synergy_tally[SPIRIT] < 2:
     #    return 0
+
+    # Comment out unique properties for more accurate synergy count
+    #synergy_sum += synergy_tally[BOSS]
+    #synergy_sum += synergy_tally[TORMENTED]
+    #synergy_sum += synergy_tally[EMPEROR]
 
     synergy_sum += synergy_tally[CULTIST] // 3 * 3
     synergy_sum += synergy_tally[DIVINE] // 2 * 2
@@ -130,8 +141,6 @@ def count_synergies(combination):
     synergy_sum += synergy_tally[MOONLIGHT] // 3 * 3
     synergy_sum += synergy_tally[NINJA] if synergy_tally[NINJA] in (1, 4) else 0
     synergy_sum += synergy_tally[SPIRIT] // 2 * 2
-    synergy_sum += synergy_tally[BOSS]
-    synergy_sum += synergy_tally[TORMENTED]
     synergy_sum += synergy_tally[WARLORD] // 3 * 3
 
     synergy_sum += synergy_tally[ADEPT] if synergy_tally[ADEPT] > 1 else 0
@@ -139,7 +148,6 @@ def count_synergies(combination):
     synergy_sum += synergy_tally[BRAWLER] // 2 * 2
     synergy_sum += synergy_tally[DAZZLER] // 2 * 2
     synergy_sum += synergy_tally[DUELIST] // 2 * 2
-    synergy_sum += synergy_tally[EMPEROR]
     synergy_sum += synergy_tally[HUNTER] if synergy_tally[HUNTER] > 1 else 0
     synergy_sum += synergy_tally[KEEPER] // 2 * 2
     synergy_sum += synergy_tally[MAGE] // 3 * 3
@@ -148,14 +156,9 @@ def count_synergies(combination):
     synergy_sum += synergy_tally[SHARPSHOOTER] // 2 * 2
     synergy_sum += synergy_tally[VANGUARD] // 2 * 2
 
-    CURR_COMB += 1
-    if CURR_COMB >= MILESTONE:
-        MILESTONE += milestone_step
-        print('=', end='', flush=True)
-
     return synergy_sum
 
-for i in range(7, 11):
+for i in range(3, 9):
     milestone_step = math.factorial(CHAMP_COUNT) // (math.factorial(i) * math.factorial(CHAMP_COUNT - i) * PROGRESS_SEGS)
     MILESTONE = milestone_step
     CURR_COMB = 0
@@ -167,8 +170,9 @@ for i in range(7, 11):
         key=count_synergies
     )
     print('|')
- 
     print(f'Most synergies for {i} units:')
     for comp in best:
         comp_str = str(comp)[1:-1].replace("'", "")
         print(f'\t- {count_synergies(comp)}: {comp_str }')
+
+input('\nCompos generated, press enter to exit')
