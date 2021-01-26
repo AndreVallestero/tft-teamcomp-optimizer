@@ -48,6 +48,7 @@ Here's some sample data from TFT Set 4.0:
 
 <details>
 <summary>Most synergies for 8 units</summary>
+
 - 18: Cho Gath, Irelia, Janna, Kayle, Maokai, Rakan, Shen, Xayah
 - 18: Cho Gath, Irelia, Janna, Kayle, Nunu, Rakan, Shen, Xayah
 - 18: Elise, Irelia, Janna, Kayle, Maokai, Nunu, Shen, Xayah
@@ -79,6 +80,7 @@ Here's some sample data from TFT Set 4.0:
 
 <details>
 <summary>Most synergies for 7 units</summary>
+
 - 16: Diana, Irelia, Jax, Shen, Talon, Yasuo, Yuumi
 - 16: Fiora, Irelia, Janna, Morgana, Nasus, Shen, Yasuo
 - 16: Fiora, Irelia, Kayle, Kindred, Shen, Yasuo, Yuumi
@@ -110,6 +112,7 @@ Here's some sample data from TFT Set 4.0:
 
 <details>
 <summary>Most synergies for 6 units</summary>
+
 - 13: Akali, Garen, Katarina, Sejuani, Tahm Kench, Vi
 - 13: Diana, Fiora, Irelia, Jax, Shen, Yuumi
 - 13: Diana, Irelia, Janna, Kayle, Kindred, Shen
@@ -141,6 +144,7 @@ Here's some sample data from TFT Set 4.0:
 
 <details>
 <summary>Most synergies for 5 units</summary>
+
 - 12: Irelia, Janna, Jax, Shen, Yasuo
 - 11: Aatrox, Irelia, Janna, Shen, Wukong
 - 11: Braum, Irelia, Janna, Shen, Wukong
@@ -172,6 +176,7 @@ Here's some sample data from TFT Set 4.0:
 
 <details>
 <summary>Most synergies for 4 units</summary>
+
 - 9: Fiora, Irelia, Jax, Shen
 - 9: Irelia, Janna, Jax, Shen
 - 9: Irelia, Janna, Kayle, Shen
@@ -203,6 +208,7 @@ Here's some sample data from TFT Set 4.0:
 
 <details>
 <summary>Most synergies for 3 units</summary>
+
 - 7: Irelia, Janna, Shen
 - 6: Fiora, Irelia, Jax
 - 6: Irelia, Morgana, Nasus
