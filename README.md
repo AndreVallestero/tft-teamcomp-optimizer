@@ -44,6 +44,34 @@ Here's some sample data from TFT Set 4.0:
 
 <details>
 <summary>Most synergies for 9 units</summary>
+
+- 20: Aatrox, Diana, Fiora, Irelia, Kalista, Pyke, Shen, Wukong, Yuumi
+- 20: Aatrox, Diana, Irelia, Janna, Pyke, Shen, Sivir, Teemo, Wukong
+- 20: Aatrox, Diana, Irelia, Morgana, Pyke, Shen, Vladimir, Wukong, Yuumi
+- 20: Aatrox, Fiora, Irelia, Janna, Kalista, Morgana, Shen, Vladimir, Wukong
+- 20: Aatrox, Fiora, Irelia, Janna, Kalista, Pyke, Shen, Talon, Wukong
+- 20: Aatrox, Fiora, Irelia, Kalista, Shen, Sivir, Teemo, Wukong, Yuumi
+- 20: Aatrox, Irelia, Janna, Jax, Kalista, Nasus, Shen, Vladimir, Wukong
+- 20: Aatrox, Irelia, Janna, Morgana, Pyke, Shen, Talon, Vladimir, Wukong
+- 20: Aatrox, Irelia, Morgana, Shen, Sivir, Teemo, Vladimir, Wukong, Yuumi
+- 20: Aatrox, Irelia, Pyke, Shen, Sivir, Talon, Teemo, Wukong, Yuumi
+- 20: Diana, Fiora, Garen, Irelia, Katarina, Shen, Tryndamere, Wukong, Yuumi
+- 20: Diana, Fiora, Irelia, Janna, Kayle, Kindred, Shen, Talon, Yasuo
+- 20: Diana, Fiora, Irelia, Kalista, Nasus, Pyke, Shen, Vladimir, Yuumi
+- 20: Diana, Fiora, Irelia, Morgana, Nasus, Shen, Talon, Yasuo, Yuumi
+- 20: Diana, Garen, Irelia, Janna, Katarina, Nidalee, Shen, Teemo, Wukong
+- 20: Diana, Irelia, Janna, Jax, Kalista, Pyke, Shen, Sivir, Teemo
+- 20: Diana, Irelia, Janna, Jax, Katarina, Nidalee, Shen, Teemo, Tryndamere
+- 20: Diana, Irelia, Janna, Nasus, Pyke, Shen, Sivir, Teemo, Vladimir
+- 20: Diana, Irelia, Jax, Kalista, Morgana, Pyke, Shen, Vladimir, Yuumi
+- 20: Diana, Irelia, Kayle, Lulu, Rakan, Shen, Talon, Xayah, Yuumi
+- 20: Diana, Irelia, Kayle, Maokai, Nunu, Shen, Talon, Xayah, Yuumi
+- 20: Diana, Irelia, Kayle, Maokai, Rakan, Shen, Talon, Xayah, Yuumi
+- 20: Diana, Irelia, Kayle, Nunu, Rakan, Shen, Talon, Xayah, Yuumi
+- 20: Diana, Irelia, Kayle, Rakan, Shen, Talon, Veigar, Xayah, Yuumi
+- 20: Fiora, Garen, Irelia, Janna, Katarina, Shen, Talon, Tryndamere, Wukong
+- 20: Fiora, Garen, Irelia, Nidalee, Shen, Teemo, Tryndamere, Wukong, Yuumi
+- 20: Fiora, Irelia, Janna, Kalista, Nasus, Pyke, Shen, Talon, Vladimir
 </details>
 
 <details>
