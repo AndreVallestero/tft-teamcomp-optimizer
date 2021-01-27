@@ -73,6 +73,38 @@ Here's some sample data from TFT Set 4.5:
 - 18: Zilean, Elise, Irelia, Kayle, Morgana, Shen, Vladimir, Xayah
 </details>
 
+<details>
+<summary>Most synergies for 7 units</summary>
+
+- 16: Azir, Lee Sin, Irelia, Janna, Jarvan, Shen, Tryndamere
+- 16: Azir, Garen, Irelia, Janna, Jarvan, Shen, Wukong
+- 16: Azir, Irelia, Janna, Jarvan, Jax, Shen, Tryndamere
+- 16: Lee Sin, Zilean, Irelia, Kalista, Morgana, Shen, Vladimir
+- 16: Lee Sin, Zilean, Irelia, Kalista, Pyke, Shen, Talon
+- 16: Lee Sin, Diana, Irelia, Shen, Talon, Yasuo, Yuumi
+- 16: Ornn, Irelia, Janna, Kayle, Rakan, Shen, Xayah
+- 16: Zilean, Aatrox, Fiora, Irelia, Kalista, Shen, Wukong
+- 16: Zilean, Aatrox, Irelia, Morgana, Shen, Vladimir, Wukong
+- 16: Zilean, Aatrox, Irelia, Pyke, Shen, Talon, Wukong
+- 16: Zilean, Fiora, Irelia, Kalista, Nasus, Shen, Vladimir
+- 16: Zilean, Irelia, Jax, Kalista, Morgana, Shen, Vladimir
+- 16: Zilean, Irelia, Jax, Kalista, Pyke, Shen, Talon
+- 16: Zilean, Irelia, Nasus, Pyke, Shen, Talon, Vladimir
+- 16: Diana, Irelia, Jax, Shen, Talon, Yasuo, Yuumi
+- 16: Fiora, Irelia, Janna, Morgana, Nasus, Shen, Yasuo
+- 16: Fiora, Irelia, Kayle, Kindred, Shen, Yasuo, Yuumi
+- 16: Irelia, Janna, Kayle, Lulu, Rakan, Shen, Xayah
+- 16: Irelia, Janna, Kayle, Maokai, Nunu, Shen, Xayah
+- 16: Irelia, Janna, Kayle, Maokai, Rakan, Shen, Xayah
+- 16: Irelia, Janna, Kayle, Nunu, Rakan, Shen, Xayah
+- 16: Irelia, Janna, Kayle, Rakan, Shen, Veigar, Xayah
+- 15: Azir, Yone, Diana, Jarvan, Katarina, Shen, Yuumi
+- 15: Azir, Yone, Fiora, Janna, Jarvan, Shen, Tryndamere
+- 15: Azir, Yone, Irelia, Janna, Kayle, Shen, Xayah
+- 15: Azir, Yone, Janna, Jarvan, Katarina, Shen, Talon
+- 15: Azir, Yone, Jarvan, Nidalee, Shen, Teemo, Yuumi
+</details>
+
 </details>
 
 <details>
