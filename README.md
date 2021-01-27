@@ -1,40 +1,76 @@
 # tft-teamcomp-optimizer
 
-This project generates the most efficient team comps (synergy-wise) within a given amount of units available. It is adaptable different sets and will work between patches with minor changes. It takes ~24 hours to run as it has to generate and calculate almost 60 billion combinations, so be ready to leave your computer on over night.
+This project generates the most efficient team comps (synergy-wise) within a given amount of units available. It is adaptable for different sets and will work between patches with minor changes. It takes ~24 hours to run as it has to generate and calculate almost 60 billion combinations, so be ready to leave your computer on over night.
 
 It does not take into account in-game effects such as `chosen one` from TFT Set 4 or spatula items.
 
-Here's some sample data from TFT Set 4.0:
+Here's some sample data from TFT Set 4.5:
 
 <details>
 <summary>With Tier 5</summary>
 
 <details>
 <summary>Most synergies for 9 units</summary>
+
+- 20: Azir, Lee Sin, Diana, Fiora, Irelia, Jarvan, Katarina, Shen, Yuumi
+- 20: Azir, Lee Sin, Diana, Irelia, Jarvan, Shen, Talon, Tryndamere, Yuumi
+- 20: Azir, Lee Sin, Fiora, Irelia, Janna, Jarvan, Katarina, Shen, Talon
+- 20: Azir, Lee Sin, Fiora, Irelia, Jarvan, Nidalee, Shen, Teemo, Yuumi
+- 20: Azir, Lee Sin, Garen, Irelia, Janna, Jarvan, Jax, Shen, Wukong
+- 20: Azir, Samira, Aatrox, Darius, Elise, Katarina, Nidalee, Pyke, Sejuani
+- 20: Azir, Samira, Aatrox, Darius, Jarvan, Katarina, Pyke, Sejuani, Sivir
+- 20: Azir, Samira, Darius, Elise, Garen, Katarina, Pyke, Sejuani, Sivir
+- 20: Azir, Samira, Darius, Elise, Katarina, Pyke, Sivir, Tahm Kench, Vi
+- 20: Azir, Yone, Irelia, Janna, Kayle, Maokai, Nunu, Shen, Xayah
+- 20: Azir, Diana, Fiora, Irelia, Jarvan, Jax, Katarina, Shen, Yuumi
+- 20: Azir, Diana, Garen, Irelia, Jarvan, Shen, Talon, Wukong, Yuumi
+- 20: Azir, Diana, Irelia, Janna, Jarvan, Katarina, Kayle, Kindred, Shen
+- 20: Azir, Diana, Irelia, Jarvan, Jax, Shen, Talon, Tryndamere, Yuumi
+- 20: Azir, Diana, Irelia, Jarvan, Katarina, Morgana, Nasus, Shen, Yuumi
+- 20: Azir, Fiora, Irelia, Janna, Jarvan, Jax, Katarina, Shen, Talon
+- 20: Azir, Fiora, Irelia, Janna, Jarvan, Morgana, Nasus, Shen, Tryndamere
+- 20: Azir, Fiora, Irelia, Jarvan, Jax, Nidalee, Shen, Teemo, Yuumi
+- 20: Azir, Fiora, Irelia, Jarvan, Kayle, Kindred, Shen, Tryndamere, Yuumi
+- 20: Azir, Irelia, Janna, Jarvan, Katarina, Morgana, Nasus, Shen, Talon
+- 20: Azir, Irelia, Janna, Jarvan, Kayle, Kindred, Nidalee, Shen, Teemo
+- 20: Azir, Irelia, Jarvan, Katarina, Kayle, Kindred, Shen, Talon, Yuumi
+- 20: Azir, Irelia, Jarvan, Morgana, Nasus, Nidalee, Shen, Teemo, Yuumi
+- 20: Lee Sin, Samira, Yone, Irelia, Kalista, Pyke, Sivir, Talon, Zed
+- 20: Lee Sin, Ornn, Fiora, Irelia, Kindred, Rakan, Shen, Xayah, Yuumi
+- 20: Lee Sin, Ornn, Irelia, Janna, Jax, Kayle, Rakan, Shen, Xayah
+- 20: Lee Sin, Zilean, Aatrox, Fiora, Irelia, Jax, Kalista, Shen, Wukong
 </details>
 
 <details>
 <summary>Most synergies for 8 units</summary>
-</details>
 
-<details>
-<summary>Most synergies for 7 units</summary>
-</details>
-
-<details>
-<summary>Most synergies for 6 units</summary>
-</details>
-
-<details>
-<summary>Most synergies for 5 units</summary>
-</details>
-
-<details>
-<summary>Most synergies for 4 units</summary>
-</details>
-
-<details>
-<summary>Most synergies for 3 units</summary>
+- 18: Azir, Lee Sin, Yone, Irelia, Janna, Jarvan, Shen, Tryndamere
+- 18: Azir, Yone, Garen, Irelia, Janna, Jarvan, Shen, Wukong
+- 18: Azir, Yone, Irelia, Janna, Jarvan, Jax, Shen, Tryndamere
+- 18: Azir, Irelia, Janna, Kayle, Maokai, Nunu, Shen, Xayah
+- 18: Lee Sin, Yone, Zilean, Irelia, Kalista, Morgana, Shen, Vladimir
+- 18: Lee Sin, Yone, Zilean, Irelia, Kalista, Pyke, Shen, Talon
+- 18: Lee Sin, Yone, Diana, Irelia, Shen, Talon, Yasuo, Yuumi
+- 18: Sett, Irelia, Janna, Kayle, Maokai, Rakan, Shen, Xayah
+- 18: Sett, Irelia, Janna, Kayle, Nunu, Rakan, Shen, Xayah
+- 18: Ornn, Yone, Irelia, Janna, Kayle, Rakan, Shen, Xayah
+- 18: Yone, Zilean, Aatrox, Fiora, Irelia, Kalista, Shen, Wukong
+- 18: Yone, Zilean, Aatrox, Irelia, Morgana, Shen, Vladimir, Wukong
+- 18: Yone, Zilean, Aatrox, Irelia, Pyke, Shen, Talon, Wukong
+- 18: Yone, Zilean, Fiora, Irelia, Kalista, Nasus, Shen, Vladimir
+- 18: Yone, Zilean, Irelia, Jax, Kalista, Morgana, Shen, Vladimir
+- 18: Yone, Zilean, Irelia, Jax, Kalista, Pyke, Shen, Talon
+- 18: Yone, Zilean, Irelia, Nasus, Pyke, Shen, Talon, Vladimir
+- 18: Yone, Diana, Irelia, Jax, Shen, Talon, Yasuo, Yuumi
+- 18: Yone, Fiora, Irelia, Janna, Morgana, Nasus, Shen, Yasuo
+- 18: Yone, Fiora, Irelia, Kayle, Kindred, Shen, Yasuo, Yuumi
+- 18: Yone, Irelia, Janna, Kayle, Lulu, Rakan, Shen, Xayah
+- 18: Yone, Irelia, Janna, Kayle, Maokai, Nunu, Shen, Xayah
+- 18: Yone, Irelia, Janna, Kayle, Maokai, Rakan, Shen, Xayah
+- 18: Yone, Irelia, Janna, Kayle, Nunu, Rakan, Shen, Xayah
+- 18: Yone, Irelia, Janna, Kayle, Rakan, Shen, Veigar, Xayah
+- 18: Zilean, Elise, Fiora, Irelia, Kalista, Kayle, Shen, Xayah
+- 18: Zilean, Elise, Irelia, Kayle, Morgana, Shen, Vladimir, Xayah
 </details>
 
 </details>

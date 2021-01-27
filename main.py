@@ -13,8 +13,6 @@ import itertools
 import heapq
 import math
 
-
-
 BOSS = 0
 CULTIST = 1
 DAREDEVIL = 2
@@ -47,10 +45,10 @@ VANGUARD = 26
 UNIT_COMBS = 27
 
 champ_dict = {
-    # Comment out 5 costs for more reliable comps
+    # Comment out teir 5 for more reliable comps
     #'Azir': (WARLORD, KEEPER, EMPEROR),
     #'Lee Sin': (DIVINE, DUELIST),
-    #'Samira': (DAREDEVIL, SHARPSHOOTER, SLAYER)
+    #'Samira': (DAREDEVIL, SHARPSHOOTER, SLAYER),
     #'Sett': (BOSS, BRAWLER),
     #'Swain': (DRAGONSOUL, SYPHONER),
     #'Ornn': (BLACKSMITH, ELDERWOOD),
@@ -114,26 +112,24 @@ CURR_COMB = MILESTONE = None
 
 def count_synergies(combination):
     global CURR_COMB, MILESTONE
+    CURR_COMB += 1
+    if CURR_COMB >= MILESTONE:
+        MILESTONE += milestone_step
+        print('=', end='', flush=True)
 
+    # Force Aurelion Sol
+    #if 'Aurelion Sol' not in combination:
+    #    return 0
+    
     synergy_sum = 0
     synergy_tally = [0] * UNIT_COMBS
     for champ_name in combination:
         for synergy in champ_dict[champ_name]:
             synergy_tally[synergy] += 1
 
-    CURR_COMB += 1
-    if CURR_COMB >= MILESTONE:
-        MILESTONE += milestone_step
-        print('=', end='', flush=True)
-
-    # Force Teemo
-    #if synergy_tally[SHARPSHOOTER] < 4 or synergy_tally[SPIRIT] < 2:
-    #    return 0
-
     # Comment out unique properties for more accurate synergy count
     #synergy_sum += synergy_tally[BOSS]
     #synergy_sum += synergy_tally[DAREDEVIL]
-    
     #synergy_sum += synergy_tally[BLACKSMITH]
     #synergy_sum += synergy_tally[EMPEROR]
 
