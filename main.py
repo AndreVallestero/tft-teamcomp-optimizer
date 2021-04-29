@@ -13,98 +13,98 @@ import itertools
 import heapq
 import math
 
-BOSS = 0
-CULTIST = 1
-DAREDEVIL = 2
-DIVINE = 3
-DRAGONSOUL = 4
-ELDERWOOD = 5
-ENLIGHTENED = 6
-EXILE = 7
-FABLED = 8
-FORTUNE = 9
-NINJA = 10
-SPIRIT = 11
-WARLORD = 12
+ABOMINATION = 0
+COVEN = 1
+DAWNBRINGER = 2
+DRACONIC = 3
+DRAGONSLAYER = 4
+ETERNAL = 5
+FORGOTTEN = 6
+HELLION = 7
+IRONCLAD = 8
+NIGHTBRINGER = 9
+REDEEMED = 10
+REVENANT = 11
+VERDANT = 12
 
-ADEPT = 13
-ASSASSIN = 14
-BLACKSMITH = 15
-BRAWLER = 16
-DUELIST = 17
-EMPEROR = 18
-EXECUTIONER = 19
-KEEPER = 20
-MAGE = 21
+ASSASSIN = 13
+BRAWLER = 14
+CARETAKER = 15
+CAVALIER = 16
+CRUEL = 17
+GODKING = 18
+INVOKER = 19
+KNIGHT = 20
+LEGIONNAIRE = 21
 MYSTIC = 22
-SHARPSHOOTER = 23
-SLAYER = 24
-SYPHONER = 25
-VANGUARD = 26
+RANGER = 23
+RENEWER = 24
+SKIRMISHER = 25
+SPELLWEAVER = 26
 
 UNIT_COMBS = 27
 
 champ_dict = {
     # Comment out teir 5 for more reliable comps
-    #'Azir': (WARLORD, KEEPER, EMPEROR),
-    #'Lee Sin': (DIVINE, DUELIST),
-    #'Samira': (DAREDEVIL, SHARPSHOOTER, SLAYER),
-    #'Sett': (BOSS, BRAWLER),
-    #'Swain': (DRAGONSOUL, SYPHONER),
-    #'Ornn': (BLACKSMITH, ELDERWOOD),
-    #'Yone': (EXILE, ADEPT),
-    #'Zilean': (CULTIST, MYSTIC),
+    #'Darius': (NIGHTBRINGER, KNIGHT, GODKING),
+    #'Garen': (DAWNBRINGER, KNIGHT, GODKING),
+    #'Heimerdinger': (DRACONIC, CARETAKER, RENEWER),
+    #'Kayle': (REDEEMED, VERDANT, LEGIONNAIRE),
+    #'Kindred': (ETERNAL, MYSTIC, RANGER),
+    #'Teemo': (HELLION, CRUEL, INVOKER),
+    #'Viego': (FORGOTTEN, ASSASSIN, SKIRMISHER),
+    #'Volibear': (REVENANT, BRAWLER),
 
-    'Aatrox': (CULTIST, VANGUARD),
-    'Akali': (NINJA, ASSASSIN),
-    'Annie': (FORTUNE, MAGE),
-    'Aurelion Sol': (DRAGONSOUL, MAGE),
-    'Brand': (DRAGONSOUL, MAGE),
-    'Braum': (DRAGONSOUL, VANGUARD),
-    'Cho Gath': (FABLED, BRAWLER),
-    'Darius': (FORTUNE, SLAYER),
-    'Diana': (SPIRIT, ASSASSIN),
-    'Elise': (CULTIST, KEEPER),
-    'Fiora': (ENLIGHTENED, DUELIST),
-    'Garen': (WARLORD, VANGUARD),
-    'Irelia': (ENLIGHTENED, DIVINE, ADEPT),
-    'Janna': (ENLIGHTENED, MYSTIC),
-    'Jarvan': (WARLORD, KEEPER),
-    'Jax': (DIVINE, DUELIST),
-    'Kalista': (CULTIST, DUELIST),
-    'Katarina': (WARLORD, FORTUNE, ASSASSIN),
-    'Kayle': (DIVINE, EXECUTIONER),
-    'Kennen': (NINJA, KEEPER),
-    'Kindred': (SPIRIT, EXECUTIONER),
-    'Lulu': (ELDERWOOD, MAGE),
-    'Maokai': (ELDERWOOD, BRAWLER),
-    'Morgana': (ENLIGHTENED, SYPHONER),
-    'Nasus': (DIVINE, SYPHONER),
-    'Nautilus': (FABLED, VANGUARD),
-    'Neeko': (FABLED, MYSTIC),
-    'Nidalee': (WARLORD, SHARPSHOOTER),
-    'Nunu': (ELDERWOOD, BRAWLER),
-    'Olaf': (DRAGONSOUL, SLAYER),
-    'Pyke': (CULTIST, ASSASSIN, SLAYER),
-    'Rakan': (ELDERWOOD, KEEPER),
-    'Sejuani': (FORTUNE, VANGUARD),
-    'Shen': (NINJA, ADEPT, MYSTIC),
-    'Shyvana': (BRAWLER, DRAGONSOUL),
-    'Sivir': (CULTIST, SHARPSHOOTER),
-    'Tahm Kench': (FORTUNE, BRAWLER),
-    'Talon': (ENLIGHTENED, ASSASSIN),
-    'Teemo': (SPIRIT, SHARPSHOOTER),
-    'Tristana': (DRAGONSOUL, SHARPSHOOTER),
-    'Tryndamere': (DUELIST, WARLORD),
-    'Twisted Fate': (CULTIST, MAGE),
-    'Veigar': (ELDERWOOD, MAGE),
-    'Vi': (WARLORD, BRAWLER),
-    'Vladimir': (CULTIST, SYPHONER),
-    'Wukong': (DIVINE, VANGUARD),
-    'Xayah': (ELDERWOOD, EXECUTIONER, KEEPER),
-    'Yasuo': (EXILE, DUELIST),
-    'Yuumi': (SPIRIT, MYSTIC),
-    'Zed': (NINJA, SLAYER)
+    'Aatrox': (REDEEMED, LEGIONNAIRE),
+    'Aphelios': (NIGHTBRINGER, RANGER),
+    'Ashe': (VERDANT, DRACONIC, RANGER),
+    'Brand': (ABOMINATION, SPELLWEAVER),
+    'Diana': (NIGHTBRINGER, DRAGONSLAYER, ASSASSIN),
+    'Draven': (FORGOTTEN, LEGIONNAIRE),
+    'Gragas': (DAWNBRINGER, BRAWLER),
+    'Hecarim': (FORGOTTEN, CAVALIER),
+    'Ivern': (REVENANT, INVOKER, RENEWER),
+    'Jax': (IRONCLAD, SKIRMISHER),
+    'Kalista': (ABOMINATION, LEGIONNAIRE),
+    'Karma': (DAWNBRINGER, INVOKER),
+    'Katarina': (FORGOTTEN, ASSASSIN),
+    'Kennen': (HELLION, SKIRMISHER),
+    'Khazix': (DAWNBRINGER, ASSASSIN),
+    'Kled': (HELLION, CAVALIER),
+    'Leblanc': (COVEN, ASSASSIN),
+    'LeeSin': (NIGHTBRINGER, SKIRMISHER),
+    'Leona': (REDEEMED, KNIGHT),
+    'Lissandra': (COVEN, RENEWER),
+    'Lulu': (HELLION, MYSTIC),
+    'Lux': (REDEEMED, MYSTIC),
+    'Mordekaiser': (DRAGONSLAYER, LEGIONNAIRE),
+    'Morgana': (COVEN, NIGHTBRINGER, MYSTIC),
+    'Nautilus': (IRONCLAD, KNIGHT),
+    'Nidalee': (DAWNBRINGER, SKIRMISHER),
+    'Nocturne': (REVENANT, ASSASSIN),
+    'Nunu': (ABOMINATION, BRAWLER),
+    'Pantheon': (DRAGONSLAYER, SKIRMISHER),
+    'Poppy': (HELLION, KNIGHT),
+    'Rell': (REDEEMED, IRONCLAD, CAVALIER),
+    'Riven': (DAWNBRINGER, LEGIONNAIRE),
+    'Ryze': (ABOMINATION, FORGOTTEN, MYSTIC),
+    'Sejuani': (NIGHTBRINGER, CAVALIER),
+    'Sett': (DRACONIC, BRAWLER),
+    'Soraka': (DAWNBRINGER, RENEWER),
+    'Syndra': (REDEEMED, INVOKER),
+    'Taric': (VERDANT, KNIGHT),
+    'Thresh': (FORGOTTEN, KNIGHT),
+    'Trundle': (DRAGONSLAYER, SKIRMISHER),
+    'Udyr': (DRACONIC, SKIRMISHER),
+    'Varus': (REDEEMED, RANGER),
+    'Vayne': (FORGOTTEN, RANGER),
+    'Velkoz': (REDEEMED, SPELLWEAVER),
+    'Viktor': (FORGOTTEN, SPELLWEAVER),
+    'Vladimir': (NIGHTBRINGER, RENEWER),
+    'Warwick': (FORGOTTEN, BRAWLER),
+    'Yasuo': (NIGHTBRINGER, LEGIONNAIRE),
+    'Ziggs': (HELLION, SPELLWEAVER),
+    'Zyra': (DRACONIC, SPELLWEAVER)
 }
 CHAMP_COUNT = len(champ_dict)
 PROGRESS_SEGS = 50
@@ -118,60 +118,57 @@ def count_synergies(combination):
         print('=', end='', flush=True)
 
     # Force Kalista Sivir
-    if 'Talon' not in combination:
     #if 'Kalista' not in combination or 'Sivir' not in combination:
-        return 0
+    #    return 0
     
-    synergy_sum = 0
     synergy_tally = [0] * UNIT_COMBS
     for champ_name in combination:
         for synergy in champ_dict[champ_name]:
             synergy_tally[synergy] += 1
 
+    # Force assassin 4
     #if synergy_tally[ASSASSIN] != 4:
     #    return 0
 
-    # Comment out unique properties for more accurate synergy count
-    #synergy_sum += synergy_tally[BOSS]
-    #synergy_sum += synergy_tally[DAREDEVIL]
-    #synergy_sum += synergy_tally[BLACKSMITH]
-    #synergy_sum += synergy_tally[EMPEROR]
+    # Branchless calculations
+    return \
+        synergy_tally[ABOMINATION] * (synergy_tally[ABOMINATION] >= 3) + \
+        3 * (synergy_tally[COVEN] >= 3) + \
+        synergy_tally[DAWNBRINGER] // 2 * 2 + \
+        ((synergy_tally[DRACONIC] - 1) // 2 * 2 + 1) * (synergy_tally[DRACONIC] >= 3) + \
+        synergy_tally[DRAGONSLAYER] // 2 * 2 + \
+        synergy_tally[FORGOTTEN] // 3 * 3 + \
+        ((synergy_tally[HELLION] - 1) // 2 * 2 + 1) * (synergy_tally[HELLION] >= 3) + \
+        synergy_tally[IRONCLAD] * (synergy_tally[IRONCLAD] >= 2) + \
+        synergy_tally[NIGHTBRINGER] // 2 * 2 + \
+        synergy_tally[REDEEMED] // 3 * 3 + \
+        synergy_tally[REVENANT] * (synergy_tally[REVENANT] >= 2) + \
+        synergy_tally[VERDANT] * (synergy_tally[VERDANT] >= 2) + \
+        synergy_tally[ASSASSIN] // 2 * 2 + \
+        synergy_tally[BRAWLER] // 2 * 2 + \
+        synergy_tally[CAVALIER] * (synergy_tally[CAVALIER] >= 2) + \
+        synergy_tally[INVOKER] // 2 * 2 + \
+        synergy_tally[KNIGHT] // 2 * 2 + \
+        synergy_tally[LEGIONNAIRE] // 2 * 2 + \
+        synergy_tally[MYSTIC] // 2 * 2 + \
+        synergy_tally[RANGER] // 2 * 2 + \
+        synergy_tally[RENEWER] // 2 * 2 + \
+        synergy_tally[SKIRMISHER] // 3 * 3 + \
+        synergy_tally[SPELLWEAVER] // 2 * 2        
+        #synergy_tally[ETERNAL] + \ 
+        #synergy_tally[CARETAKER] + \
+        #synergy_tally[CRUEL] + \
+        #synergy_tally[GODKING] >= 1 + \
+        # Comment out unique properties for more accurate synergy count
 
-    synergy_sum += synergy_tally[CULTIST] // 3 * 3
-    synergy_sum += synergy_tally[DIVINE] // 2 * 2
-    synergy_sum += synergy_tally[DRAGONSOUL] // 3 * 3
-    synergy_sum += synergy_tally[ELDERWOOD] // 3 * 3
-    synergy_sum += synergy_tally[ENLIGHTENED] // 2 * 2
-    synergy_sum += synergy_tally[EXILE]
-    synergy_sum += synergy_tally[FABLED] if synergy_tally[FABLED] == 3 else 0
-    synergy_sum += synergy_tally[FORTUNE] // 3 * 3
-    synergy_sum += synergy_tally[NINJA] if synergy_tally[NINJA] in (1, 4) else 0
-    synergy_sum += synergy_tally[SPIRIT] // 2 * 2
-    synergy_sum += synergy_tally[WARLORD] // 3 * 3
-
-    synergy_sum += synergy_tally[ADEPT] if synergy_tally[ADEPT] > 1 else 0
-    synergy_sum += synergy_tally[ASSASSIN] // 2 * 2
-    synergy_sum += synergy_tally[BRAWLER] // 2 * 2
-    synergy_sum += synergy_tally[DUELIST] // 2 * 2
-    synergy_sum += synergy_tally[EXECUTIONER] if synergy_tally[EXECUTIONER] > 1 else 0
-    synergy_sum += synergy_tally[KEEPER] // 2 * 2
-    synergy_sum += (synergy_tally[MAGE] - 3) // 2 * 2 + 3 if synergy_tally[MAGE] > 2 else 0
-    synergy_sum += synergy_tally[MYSTIC] // 2 * 2
-    synergy_sum += synergy_tally[SHARPSHOOTER] // 2 * 2
-    synergy_sum += synergy_tally[SLAYER] // 3 * 3
-    synergy_sum += synergy_tally[SYPHONER] // 2 * 2
-    synergy_sum += synergy_tally[VANGUARD] // 2 * 2
-
-    return synergy_sum
-
-for i in range(7, 9):
+for i in range(3, 9):
     milestone_step = math.factorial(CHAMP_COUNT) // (math.factorial(i) * math.factorial(CHAMP_COUNT - i) * PROGRESS_SEGS)
     MILESTONE = milestone_step
     CURR_COMB = 0
 
     print(f'\nCalculating synergies for {i} units\n+{"-"*PROGRESS_SEGS}+\n|', end='')
     best = heapq.nlargest(
-        UNIT_COMBS,
+        32,
         itertools.combinations(champ_dict.keys(), i),
         key=count_synergies
     )
