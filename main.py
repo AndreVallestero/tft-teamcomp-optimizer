@@ -61,7 +61,7 @@ champ_dict = {
     'Aurelion Sol': (DRAGONSOUL, MAGE),
     'Brand': (DRAGONSOUL, MAGE),
     'Braum': (DRAGONSOUL, VANGUARD),
-    'Cho Gath': (BRAWLER, FABLED),
+    'Cho Gath': (FABLED, BRAWLER),
     'Darius': (FORTUNE, SLAYER),
     'Diana': (SPIRIT, ASSASSIN),
     'Elise': (CULTIST, KEEPER),
@@ -117,15 +117,19 @@ def count_synergies(combination):
         MILESTONE += milestone_step
         print('=', end='', flush=True)
 
-    # Force Aurelion Sol
-    #if 'Aurelion Sol' not in combination:
-    #    return 0
+    # Force Kalista Sivir
+    if 'Talon' not in combination:
+    #if 'Kalista' not in combination or 'Sivir' not in combination:
+        return 0
     
     synergy_sum = 0
     synergy_tally = [0] * UNIT_COMBS
     for champ_name in combination:
         for synergy in champ_dict[champ_name]:
             synergy_tally[synergy] += 1
+
+    #if synergy_tally[ASSASSIN] != 4:
+    #    return 0
 
     # Comment out unique properties for more accurate synergy count
     #synergy_sum += synergy_tally[BOSS]
@@ -160,7 +164,7 @@ def count_synergies(combination):
 
     return synergy_sum
 
-for i in range(3, 10):
+for i in range(7, 9):
     milestone_step = math.factorial(CHAMP_COUNT) // (math.factorial(i) * math.factorial(CHAMP_COUNT - i) * PROGRESS_SEGS)
     MILESTONE = milestone_step
     CURR_COMB = 0
