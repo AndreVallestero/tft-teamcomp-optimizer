@@ -1,6 +1,11 @@
 #![allow(soft_unstable)]
 use rayon::prelude::*;
-use std::{cmp::Reverse, collections::BinaryHeap, fmt, io::{self, Write}};
+use std::{
+    cmp::Reverse,
+    collections::BinaryHeap,
+    fmt,
+    io::{self, Write},
+};
 
 // Try a non branchless approach where we skip the assignment if 3rd is empty
 // Try another approach where we remove empty and opt for a pointer to a exact size array
@@ -187,11 +192,6 @@ impl fmt::Display for CompSynergy {
     }
 }
 
-const EMPTY_COMP: Reverse<CompSynergy> = Reverse(CompSynergy {
-    synergy: 0,
-    indices: Vec::new(),
-});
-
 fn main() {
     // let now = SystemTime::now();
 
@@ -231,10 +231,16 @@ fn main() {
                 let synergy = calc_synergies(&comp);
 
                 // Add comp to top N
-                if synergy > (*min_heap.peek().unwrap_or(&EMPTY_COMP)).0.synergy {
-                    if min_heap.len() == TOP_N {
+                let min = min_heap.peek().map_or(0, |m| m.0.synergy);
+                if min_heap.len() == TOP_N {
+                    if synergy > min {
                         min_heap.pop();
+                        min_heap.push(Reverse(CompSynergy {
+                            synergy,
+                            indices: indices.clone(),
+                        }));
                     }
+                } else if synergy >= min {
                     min_heap.push(Reverse(CompSynergy {
                         synergy,
                         indices: indices.clone(),
