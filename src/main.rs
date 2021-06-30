@@ -38,6 +38,7 @@ const EMPTY: usize = 27; // Add empty for fixed sized array and branchless imple
 const SYNERGIES: usize = EMPTY + 1;
 
 /*
+// Remove 5 cost champs by default for more consistent comps
 const NUM_CHAMPS: usize = 58;
 const CHAMPS: [[usize; 3]; NUM_CHAMPS] = [
     [NIGHTBRINGER, KNIGHT, GODKING],   // Darius
@@ -104,8 +105,8 @@ const CHAMPS: [[usize; 3]; NUM_CHAMPS] = [
 ];
 
 /*
+// 5 Costs
 const CHAMP_NAMES: [&str; 58] = [
-    5 cost champs here
     "Darius",
     "Garen",
     "Heimerdinger",
@@ -177,14 +178,12 @@ struct CompSynergy {
 
 impl fmt::Display for CompSynergy {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        // We need to remove "-" from the number output.
         let champ_names: Vec<&str> = self
             .indices
             .iter()
             .map(|i| return CHAMP_NAMES[*i])
             .collect();
-
-        formatter.pad(format!("{}: {:?}", self.synergy, champ_names).as_str())
+        formatter.write_str(format!("{}: {:?}", self.synergy, champ_names).as_str())
     }
 }
 
@@ -196,6 +195,7 @@ const EMPTY_COMP: Reverse<CompSynergy> = Reverse(CompSynergy {
 fn main() {
     // let now = SystemTime::now();
 
+    // Get number of units for comp
     let mut input_text = String::new();
     print!("Number of units: ");
     io::stdout().flush().unwrap();
@@ -204,6 +204,7 @@ fn main() {
         .expect("failed to read input.");
     let num_units: usize = input_text.trim().parse().expect("could not parse number");
 
+    // Log num comps and threads
     let num_combinations = n_choose_k(NUM_CHAMPS, num_units);
     println!(
         "Generating and analyzing {} comps using {} threads",
@@ -215,6 +216,7 @@ fn main() {
     (0..NUM_CHAMPS - num_units + 1)
         .into_par_iter()
         .map(|init_index| {
+            // Combination generation boiler plate
             let k_sub_1 = num_units - 1;
             let n_sub_k = NUM_CHAMPS - num_units;
             let mut indices: Vec<usize> = (init_index..init_index + num_units).collect();
@@ -228,6 +230,7 @@ fn main() {
                     .collect::<Vec<[usize; 3]>>();
                 let synergy = calc_synergies(&comp);
 
+                // Add comp to top N
                 if synergy > (*min_heap.peek().unwrap_or(&EMPTY_COMP)).0.synergy {
                     if min_heap.len() == TOP_N {
                         min_heap.pop();
@@ -251,6 +254,8 @@ fn main() {
             min_heap.into_vec()
         })
         .collect_into_vec(&mut chunks_top_n);
+
+    // Combine and distill top N from chunks
     let mut top_n = chunks_top_n.concat();
     top_n.sort_unstable();
     top_n.truncate(TOP_N);
@@ -271,15 +276,13 @@ fn main() {
      */
 
     // dbg!(now.elapsed().unwrap());
-    // println!("Largest: {:?}", top_n);
-
     for comp_synergy in top_n {
         println!("{}", comp_synergy.0);
     }
 }
 
 fn calc_synergies(comp: &Vec<[usize; 3]>) -> usize {
-    let mut synergy_tally = [0usize; SYNERGIES]; // Maybe inline this function to remove this allocation for each comp by using vec.fill(0)
+    let mut synergy_tally = [0usize; SYNERGIES]; // Maybe inline this function to remove this allocation for each comp by using slice.fill(0)
     for champ in comp {
         for synergy in champ {
             synergy_tally[*synergy] += 1;
@@ -301,7 +304,7 @@ fn calc_synergies(comp: &Vec<[usize; 3]>) -> usize {
     active_synergies += synergy_tally[DRAGONSLAYER] / 2 * 2;
     active_synergies += synergy_tally[FORGOTTEN] / 3 * 3;
     match synergy_tally[HELLION] {
-        3 | 5 | 7 => active_synergies += synergy_tally[DRACONIC],
+        3 | 5 | 7 => active_synergies += synergy_tally[HELLION],
         _ => (),
     }
     if synergy_tally[IRONCLAD] >= 2 {
