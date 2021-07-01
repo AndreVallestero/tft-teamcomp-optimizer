@@ -110,7 +110,7 @@ const CHAMPS: [[usize; 3]; NUM_CHAMPS] = [
 
 /*
 // 5 Costs
-const CHAMP_NAMES: [&str; 58] = [
+const CHAMP_NAMES: [&str; NUM_CHAMPS] = [
     "Darius",
     "Garen",
     "Heimerdinger",
@@ -120,7 +120,7 @@ const CHAMP_NAMES: [&str; 58] = [
     "Viego",
     "Volibear",
 */
-const CHAMP_NAMES: [&str; 50] = [
+const CHAMP_NAMES: [&str; NUM_CHAMPS] = [
     "Aatrox",
     "Aphelios",
     "Ashe",
