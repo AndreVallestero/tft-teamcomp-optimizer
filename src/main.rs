@@ -1,4 +1,3 @@
-#![allow(soft_unstable)]
 use rayon::prelude::*;
 use std::{
     cmp::Reverse,
