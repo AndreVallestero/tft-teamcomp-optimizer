@@ -69,7 +69,7 @@ const CHAMPS: [[usize; 3]; NUM_CHAMPS] = [
     [ABOMINATION, LEGIONNAIRE, EMPTY],      // Kalista
     [DAWNBRINGER, INVOKER, EMPTY],          // Karma
     [FORGOTTEN, ASSASSIN, EMPTY],           // Katarina
-    [HELLION, CAVALIER, EMPTY],             // Kennen
+    [HELLION, SKIRMISHER, EMPTY],           // Kennen
     [DAWNBRINGER, ASSASSIN, EMPTY],         // Khazix
     [HELLION, CAVALIER, EMPTY],             // Kled
     [COVEN, ASSASSIN, EMPTY],               // Leblanc
