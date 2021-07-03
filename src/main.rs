@@ -4,6 +4,7 @@ use std::{
     collections::BinaryHeap,
     fmt,
     io::{self, Write},
+    time::SystemTime,
 };
 
 // Try a non branchless approach where we skip the assignment if 3rd is empty
@@ -41,20 +42,8 @@ const SPELLWEAVER: usize = 26;
 const EMPTY: usize = 27; // Add empty for fixed sized array and branchless implementation
 const SYNERGIES: usize = EMPTY + 1;
 
-/*
-// Remove 5 cost champs by default for more consistent comps
 const NUM_CHAMPS: usize = 58;
-const CHAMPS: [[usize; 3]; NUM_CHAMPS] = [
-    [NIGHTBRINGER, KNIGHT, GODKING],   // Darius
-    [DAWNBRINGER, KNIGHT, GODKING],    // Garen
-    [DRACONIC, CARETAKER, RENEWER],    // Heimerdinger
-    [REDEEMED, VERDANT, LEGIONNAIRE],  // Kayle
-    [ETERNAL, MYSTIC, RANGER],         // Kindred
-    [HELLION, CRUEL, INVOKER],         // Teemo
-    [FORGOTTEN, ASSASSIN, SKIRMISHER], // Viego
-    [REVENANT, BRAWLER, EMPTY],        // Volibear
- */
-const NUM_CHAMPS: usize = 50;
+const NUM_CHAMPS_NO_FIVE: usize = 50;
 const CHAMPS: [[usize; 3]; NUM_CHAMPS] = [
     [REDEEMED, LEGIONNAIRE, EMPTY],         // Aatrox
     [NIGHTBRINGER, RANGER, EMPTY],          // Aphelios
@@ -106,71 +95,75 @@ const CHAMPS: [[usize; 3]; NUM_CHAMPS] = [
     [NIGHTBRINGER, LEGIONNAIRE, EMPTY],     // Yasuo
     [HELLION, SPELLWEAVER, EMPTY],          // Ziggs
     [DRACONIC, SPELLWEAVER, EMPTY],         // Zyra
+    [NIGHTBRINGER, KNIGHT, GODKING],        // Darius
+    [DAWNBRINGER, KNIGHT, GODKING],         // Garen
+    [DRACONIC, CARETAKER, RENEWER],         // Heimerdinger
+    [REDEEMED, VERDANT, LEGIONNAIRE],       // Kayle
+    [ETERNAL, MYSTIC, RANGER],              // Kindred
+    [HELLION, CRUEL, INVOKER],              // Teemo
+    [FORGOTTEN, ASSASSIN, SKIRMISHER],      // Viego
+    [REVENANT, BRAWLER, EMPTY],             // Volibear
 ];
 
-/*
-// 5 Costs
 const CHAMP_NAMES: [&str; NUM_CHAMPS] = [
-    "Darius",
-    "Garen",
-    "Heimerdinger",
-    "Kayle",
-    "Kindred",
-    "Teemo",
-    "Viego",
-    "Volibear",
-*/
-const CHAMP_NAMES: [&str; NUM_CHAMPS] = [
-    "Aatrox",
-    "Aphelios",
-    "Ashe",
-    "Brand",
-    "Diana",
-    "Draven",
-    "Gragas",
-    "Hecarim",
-    "Ivern",
-    "Jax",
-    "Kalista",
-    "Karma",
-    "Katarina",
-    "Kennen",
-    "Khazix",
-    "Kled",
-    "Leblanc",
-    "LeeSin",
-    "Leona",
-    "Lissandra",
-    "Lulu",
-    "Lux",
-    "Mordekaiser",
-    "Morgana",
-    "Nautilus",
-    "Nidalee",
-    "Nocturne",
-    "Nunu",
-    "Pantheon",
-    "Poppy",
-    "Rell",
-    "Riven",
-    "Ryze",
-    "Sejuani",
-    "Sett",
-    "Soraka",
-    "Syndra",
-    "Taric",
-    "Thresh",
-    "Trundle",
-    "Udyr",
-    "Varus",
-    "Vayne",
-    "Velkoz",
-    "Viktor",
-    "Vladmir",
-    "Warwick",
-    "Yasuo",
-    "Ziggs",
-    "Zyra",
+    "aatrox",
+    "aphelios",
+    "ashe",
+    "brand",
+    "diana",
+    "draven",
+    "gragas",
+    "hecarim",
+    "ivern",
+    "jax",
+    "kalista",
+    "karma",
+    "katarina",
+    "kennen",
+    "khazix",
+    "kled",
+    "leblanc",
+    "leesin",
+    "leona",
+    "lissandra",
+    "lulu",
+    "lux",
+    "mordekaiser",
+    "morgana",
+    "nautilus",
+    "nidalee",
+    "nocturne",
+    "nunu",
+    "pantheon",
+    "poppy",
+    "rell",
+    "riven",
+    "ryze",
+    "sejuani",
+    "sett",
+    "soraka",
+    "syndra",
+    "taric",
+    "thresh",
+    "trundle",
+    "udyr",
+    "varus",
+    "vayne",
+    "velkoz",
+    "viktor",
+    "vladmir",
+    "warwick",
+    "yasuo",
+    "ziggs",
+    "zyra",
+    "darius",
+    "garen",
+    "heimerdinger",
+    "kayle",
+    "kindred",
+    "teemo",
+    "viego",
+    "volibear",
 ];
 const TOP_N: usize = 10;
 
@@ -192,9 +185,6 @@ impl fmt::Display for CompSynergy {
 }
 
 fn main() {
-    // let now = SystemTime::now();
-
-    // Get number of units for comp
     let mut input_text = String::new();
     print!("Number of units: ");
     io::stdout().flush().unwrap();
@@ -203,31 +193,68 @@ fn main() {
         .expect("failed to read input.");
     let num_units: usize = input_text.trim().parse().expect("could not parse number");
 
+    print!("Include 5 costs? [y/N] ");
+    input_text.clear();
+    io::stdout().flush().unwrap();
+    io::stdin()
+        .read_line(&mut input_text)
+        .expect("failed to read input.");
+    let num_champs = match input_text.trim().to_lowercase().as_str() {
+        "y" => NUM_CHAMPS,
+        _ => NUM_CHAMPS_NO_FIVE,
+    };
+
+    print!("Calculate unique synergies? [y/N] ");
+    input_text.clear();
+    io::stdout().flush().unwrap();
+    io::stdin()
+        .read_line(&mut input_text)
+        .expect("failed to read input.");
+    let calc_unique_synergies = input_text.trim().to_lowercase().as_str() == "y";
+
+    print!("Force champs (comma separated champ names): ");
+    input_text.clear();
+    io::stdout().flush().unwrap();
+    io::stdin()
+        .read_line(&mut input_text)
+        .expect("failed to read input.");
+    let force_champs: Vec<usize> = input_text
+        .split(",")
+        .into_iter()
+        .filter_map(|champ| {
+            CHAMP_NAMES.iter().position(|name| *name == champ.trim().to_lowercase().as_str())
+        })
+        .collect();
+
+    let time_start = SystemTime::now();
+
+    // TODO, ADD force trait
+
     // Log num comps and threads
-    let num_combinations = n_choose_k(NUM_CHAMPS, num_units);
-    println!(
-        "Generating and analyzing {} comps using {} threads",
+    let num_combinations = n_choose_k(num_champs, num_units);
+    let num_chunks = num_champs - num_units + 1;
+    print!(
+        "Generating and analyzing {} comps with {} champs forced using {} threads\n+{}+\n|",
         num_combinations,
-        rayon::current_num_threads()
+        force_champs.len(),
+        rayon::current_num_threads(),
+        "-".repeat(num_chunks)
     );
+    io::stdout().flush().unwrap();
 
     let mut chunks_top_n = Vec::new();
-    (0..NUM_CHAMPS - num_units + 1)
+    (0..num_chunks)
         .into_par_iter()
         .map(|init_index| {
             // Combination generation boiler plate
             let k_sub_1 = num_units - 1;
-            let n_sub_k = NUM_CHAMPS - num_units;
+            let n_sub_k = num_champs - num_units;
             let mut indices: Vec<usize> = (init_index..init_index + num_units).collect();
             let mut min_heap: BinaryHeap<Reverse<CompSynergy>> = BinaryHeap::with_capacity(TOP_N);
 
-            while indices[0] == init_index && indices[k_sub_1] < NUM_CHAMPS {
+            while indices[0] == init_index && indices[k_sub_1] < num_champs {
                 // Calculate the amount of active synergies
-                let comp: Vec<[usize; 3]> = indices
-                    .iter()
-                    .map(|champ_index| CHAMPS[*champ_index])
-                    .collect::<Vec<[usize; 3]>>();
-                let synergy = calc_synergies(&comp);
+                let synergy = calc_synergies(&indices, &force_champs, calc_unique_synergies);
 
                 // Add comp to top N
                 let min = min_heap.peek().map_or(0, |m| m.0.synergy);
@@ -256,6 +283,8 @@ fn main() {
                     indices[j] = indices[j - 1] + 1;
                 }
             }
+            print!("#");
+            io::stdout().flush().unwrap();
             min_heap.into_vec()
         })
         .collect_into_vec(&mut chunks_top_n);
@@ -280,16 +309,24 @@ fn main() {
     }
      */
 
-    // dbg!(now.elapsed().unwrap());
+    println!("|\nCompleted in {:?}", time_start.elapsed().unwrap());
     for comp_synergy in top_n {
         println!("{}", comp_synergy.0);
     }
 }
 
-fn calc_synergies(comp: &Vec<[usize; 3]>) -> usize {
-    let mut synergy_tally = [0usize; SYNERGIES]; // Maybe inline this function to remove this allocation for each comp by using slice.fill(0)
-    for champ in comp {
-        for synergy in champ {
+fn calc_synergies(
+    comp: &Vec<usize>,
+    force_champs: &Vec<usize>,
+    calc_unique_synergies: bool,
+) -> usize {
+    if !force_champs.iter().all(|champ| comp.contains(champ)) {
+        return 0;
+    }
+
+    let mut synergy_tally = [0usize; SYNERGIES]; // TODO: inline this function to remove this allocation for each comp by using slice.fill(0)
+    for champ_index in comp {
+        for synergy in &CHAMPS[*champ_index] {
             synergy_tally[*synergy] += 1;
         }
     }
@@ -336,13 +373,14 @@ fn calc_synergies(comp: &Vec<[usize; 3]>) -> usize {
     active_synergies += synergy_tally[RENEWER] / 2 * 2;
     active_synergies += synergy_tally[SKIRMISHER] / 3 * 3;
     active_synergies += synergy_tally[SPELLWEAVER] / 2 * 2;
-    // active_synergies += synergy_tally[ETERNAL];
-    // active_synergies += synergy_tally[CARETAKER];
-    // active_synergies += synergy_tally[CRUEL];
-    // if synergy_tally[GODKING] >= 1 {
-    //     active_synergies += 1
-    // }
-    // Comment out unique properties for more accurate synergy count
+    if calc_unique_synergies {
+        active_synergies += synergy_tally[ETERNAL];
+        active_synergies += synergy_tally[CARETAKER];
+        active_synergies += synergy_tally[CRUEL];
+        if synergy_tally[GODKING] >= 1 {
+            active_synergies += 1
+        }
+    }
     active_synergies
 }
 
