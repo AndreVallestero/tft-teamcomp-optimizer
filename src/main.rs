@@ -3,7 +3,7 @@ use std::{
     cmp::Reverse,
     collections::BinaryHeap,
     fmt,
-    io::{self, Write},
+    io::{stdin, stdout, Read, Write},
     time::SystemTime,
 };
 
@@ -41,6 +41,36 @@ const SPELLWEAVER: usize = 26;
 
 const EMPTY: usize = 27; // Add empty for fixed sized array and branchless implementation
 const SYNERGIES: usize = EMPTY + 1;
+
+const SYNERGY_NAMES: [&str; EMPTY] = [
+    "abomination",
+    "coven",
+    "dawnbringer",
+    "draconic",
+    "dragonslayer",
+    "eternal",
+    "forgotten",
+    "hellion",
+    "ironclad",
+    "nightbringer",
+    "redeemed",
+    "revenant",
+    "verdant",
+    "assassin",
+    "brawler",
+    "caretaker",
+    "cavalier",
+    "cruel",
+    "godking",
+    "invoker",
+    "knight",
+    "legionnaire",
+    "mystic",
+    "ranger",
+    "renewer",
+    "skirmisher",
+    "spellweaver",
+];
 
 const NUM_CHAMPS: usize = 58;
 const NUM_CHAMPS_NO_FIVE: usize = 50;
@@ -165,7 +195,6 @@ const CHAMP_NAMES: [&str; NUM_CHAMPS] = [
     "viego",
     "volibear",
 ];
-const TOP_N: usize = 10;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone)]
 struct CompSynergy {
@@ -187,62 +216,118 @@ impl fmt::Display for CompSynergy {
 fn main() {
     let mut input_text = String::new();
     print!("Number of units: ");
-    io::stdout().flush().unwrap();
-    io::stdin()
+    stdout().flush().unwrap();
+    stdin()
         .read_line(&mut input_text)
-        .expect("failed to read input.");
+        .expect("failed to read input");
     let num_units: usize = input_text.trim().parse().expect("could not parse number");
 
     print!("Include 5 costs? [y/N] ");
+    stdout().flush().unwrap();
     input_text.clear();
-    io::stdout().flush().unwrap();
-    io::stdin()
+    stdin()
         .read_line(&mut input_text)
-        .expect("failed to read input.");
+        .expect("failed to read input");
     let num_champs = match input_text.trim().to_lowercase().as_str() {
         "y" => NUM_CHAMPS,
         _ => NUM_CHAMPS_NO_FIVE,
     };
 
     print!("Calculate unique synergies? [y/N] ");
+    stdout().flush().unwrap();
     input_text.clear();
-    io::stdout().flush().unwrap();
-    io::stdin()
+    stdin()
         .read_line(&mut input_text)
-        .expect("failed to read input.");
+        .expect("failed to read input");
     let calc_unique_synergies = input_text.trim().to_lowercase().as_str() == "y";
 
-    print!("Force champs (comma separated champ names): ");
+    print!("Force champs (e.g. \"leona, velkoz\"): ");
+    stdout().flush().unwrap();
     input_text.clear();
-    io::stdout().flush().unwrap();
-    io::stdin()
+    stdin()
         .read_line(&mut input_text)
-        .expect("failed to read input.");
-    let force_champs: Vec<usize> = input_text
-        .split(",")
-        .into_iter()
-        .filter_map(|champ| {
-            CHAMP_NAMES.iter().position(|name| *name == champ.trim().to_lowercase().as_str())
-        })
-        .collect();
+        .expect("failed to read input");
+
+    let trim = input_text.trim();
+    let champ_forces: Vec<usize> = if trim.is_empty() {
+        vec![]
+    } else {
+        trim.split(",")
+            .map(|champ| {
+                CHAMP_NAMES
+                    .iter()
+                    .position(|name| *name == champ.trim().to_lowercase().as_str())
+                    .expect("invalid champ name")
+            })
+            .collect()
+    };
+
+    print!("Force synergies (e.g. \"assassin:4, brawler:2\"): ");
+    stdout().flush().unwrap();
+    input_text.clear();
+    stdin()
+        .read_line(&mut input_text)
+        .expect("failed to read input");
+    let trim = input_text.trim();
+    let synergy_forces: Vec<[usize; 2]> = if trim.is_empty() {
+        vec![]
+    } else {
+        trim.split(",")
+            .map(|synergy_str| {
+                let mut synergy_parts = synergy_str.split(":");
+                // [0] is the synergy index, [1] is the minimum required
+                let input_name = synergy_parts
+                    .next()
+                    .expect("synergy force missing name")
+                    .trim()
+                    .to_lowercase();
+
+                dbg!(&input_name);
+                [
+                    SYNERGY_NAMES
+                        .iter()
+                        .position(|name| *name == input_name)
+                        .expect("invalid synergy name"),
+                    synergy_parts
+                        .next()
+                        .expect("synergy missing min number")
+                        .trim()
+                        .parse()
+                        .expect("could not parse number"),
+                ]
+            })
+            .collect()
+    };
+
+    print!("Number of results: [20] ");
+    stdout().flush().unwrap();
+    input_text.clear();
+    stdin()
+        .read_line(&mut input_text)
+        .expect("failed to read input");
+    let trim = input_text.trim();
+    let top_n: usize = if trim.is_empty() {
+        20
+    } else {
+        trim.parse().expect("could not parse number")
+    };
 
     let time_start = SystemTime::now();
-
-    // TODO, ADD force trait
 
     // Log num comps and threads
     let num_combinations = n_choose_k(num_champs, num_units);
     let num_chunks = num_champs - num_units + 1;
     print!(
-        "Generating and analyzing {} comps with {} champs forced using {} threads\n+{}+\n|",
+        "Generating and analyzing {} comps with {} champs and {} synergies forced using {} threads\n+{}+\n|",
         num_combinations,
-        force_champs.len(),
+        champ_forces.len(),
+        synergy_forces.len(),
         rayon::current_num_threads(),
         "-".repeat(num_chunks)
     );
-    io::stdout().flush().unwrap();
+    stdout().flush().unwrap();
 
-    let mut chunks_top_n = Vec::new();
+    let mut chunks_top_n_comps = Vec::new();
     (0..num_chunks)
         .into_par_iter()
         .map(|init_index| {
@@ -250,15 +335,20 @@ fn main() {
             let k_sub_1 = num_units - 1;
             let n_sub_k = num_champs - num_units;
             let mut indices: Vec<usize> = (init_index..init_index + num_units).collect();
-            let mut min_heap: BinaryHeap<Reverse<CompSynergy>> = BinaryHeap::with_capacity(TOP_N);
+            let mut min_heap: BinaryHeap<Reverse<CompSynergy>> = BinaryHeap::with_capacity(top_n);
 
             while indices[0] == init_index && indices[k_sub_1] < num_champs {
                 // Calculate the amount of active synergies
-                let synergy = calc_synergies(&indices, &force_champs, calc_unique_synergies);
+                let synergy = calc_synergies(
+                    &indices,
+                    &champ_forces,
+                    &synergy_forces,
+                    calc_unique_synergies,
+                );
 
                 // Add comp to top N
                 let min = min_heap.peek().map_or(0, |m| m.0.synergy);
-                if min_heap.len() == TOP_N {
+                if min_heap.len() == top_n {
                     if synergy > min {
                         min_heap.pop();
                         min_heap.push(Reverse(CompSynergy {
@@ -284,51 +374,47 @@ fn main() {
                 }
             }
             print!("#");
-            io::stdout().flush().unwrap();
+            stdout().flush().unwrap();
             min_heap.into_vec()
         })
-        .collect_into_vec(&mut chunks_top_n);
+        .collect_into_vec(&mut chunks_top_n_comps);
 
     // Combine and distill top N from chunks
-    let mut top_n = chunks_top_n.concat();
-    top_n.sort_unstable();
-    top_n.truncate(TOP_N);
-
-    /*
-    // Single threaded solution
-    let mut largest = 0;
-    let mut synergy_tally: [usize; SYNERGIES];
-    let combinations = CHAMPS.iter().combinations(num_units);
-    for champs in combinations {
-        synergy_tally = [0; SYNERGIES];
-        for champ in champs {
-            for synergy in champ {
-                synergy_tally[*synergy] += 1;
-            }
-        }
-    }
-     */
+    let mut top_n_comps = chunks_top_n_comps.concat();
+    top_n_comps.sort_unstable();
+    top_n_comps.truncate(top_n);
 
     println!("|\nCompleted in {:?}", time_start.elapsed().unwrap());
-    for comp_synergy in top_n {
+    for comp_synergy in top_n_comps {
         println!("{}", comp_synergy.0);
     }
+    print!("Press enter to continue...");
+    stdout().flush().unwrap();
+    stdin().read(&mut [0]).unwrap();
 }
 
 fn calc_synergies(
     comp: &Vec<usize>,
-    force_champs: &Vec<usize>,
+    champ_forces: &Vec<usize>,
+    synergy_forces: &Vec<[usize; 2]>,
     calc_unique_synergies: bool,
 ) -> usize {
-    if !force_champs.iter().all(|champ| comp.contains(champ)) {
+    if !champ_forces.iter().all(|champ| comp.contains(champ)) {
         return 0;
     }
 
-    let mut synergy_tally = [0usize; SYNERGIES]; // TODO: inline this function to remove this allocation for each comp by using slice.fill(0)
+    let mut synergy_tally = [0usize; SYNERGIES];
     for champ_index in comp {
         for synergy in &CHAMPS[*champ_index] {
             synergy_tally[*synergy] += 1;
         }
+    }
+
+    if synergy_forces
+        .iter()
+        .any(|synergy_force| synergy_tally[synergy_force[0]] < synergy_force[1])
+    {
+        return 0;
     }
 
     let mut active_synergies = 0;
