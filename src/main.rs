@@ -282,7 +282,6 @@ fn main() {
                     .trim()
                     .to_lowercase();
 
-                dbg!(&input_name);
                 [
                     SYNERGY_NAMES
                         .iter()
@@ -307,7 +306,7 @@ fn main() {
         .expect("failed to read input");
     let trim = input_text.trim();
     let top_n: usize = if trim.is_empty() {
-        20
+        10
     } else {
         trim.parse().expect("could not parse number")
     };
