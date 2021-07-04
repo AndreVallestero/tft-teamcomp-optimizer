@@ -213,6 +213,8 @@ impl fmt::Display for CompSynergy {
     }
 }
 
+const DEFAULT_TOP_N: usize = 10;
+
 fn main() {
     let mut input_text = String::new();
     print!("Number of units: ");
@@ -298,7 +300,7 @@ fn main() {
             .collect()
     };
 
-    print!("Number of results: [20] ");
+    print!("Number of results: [{}] ", DEFAULT_TOP_N);
     stdout().flush().unwrap();
     input_text.clear();
     stdin()
@@ -306,7 +308,7 @@ fn main() {
         .expect("failed to read input");
     let trim = input_text.trim();
     let top_n: usize = if trim.is_empty() {
-        10
+        DEFAULT_TOP_N
     } else {
         trim.parse().expect("could not parse number")
     };
