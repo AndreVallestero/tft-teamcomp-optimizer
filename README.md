@@ -3,7 +3,7 @@
 ![unknown](https://user-images.githubusercontent.com/39736205/124393917-e0536b80-dcca-11eb-8aed-ada95a06e3e3.png)
 
 
-This project generates the most efficient team comps (synergy-wise) within a given amount of units available. It is adaptable for different sets and will work between patches with minor changes. It takes ~24 hours to run as it has to generate and calculate almost 60 billion combinations, so be ready to leave your computer on over night.
+This project generates the most efficient team comps (synergy-wise) within a given amount of units available. It is adaptable for different sets and will work between patches with minor changes.
 
 Here's some sample data from TFT Set 5:
 
