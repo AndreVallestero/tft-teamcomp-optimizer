@@ -413,7 +413,7 @@ fn calc_synergies(
 
     if synergy_forces
         .iter()
-        .any(|synergy_force| synergy_tally[synergy_force[0]] < synergy_force[1])
+        .any(|synergy_force| synergy_tally[synergy_force[0]] != synergy_force[1])
     {
         return 0;
     }
