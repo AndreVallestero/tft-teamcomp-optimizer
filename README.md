@@ -99,5 +99,5 @@ TODO
 - Procedurally generate champ and trait data at compile time using game data (`object.sets[6].champions`)
   - Use `build.rs` if necessary
   - https://raw.communitydragon.org/latest/cdragon/tft/en_us.json
-- Optimize using 3d adjacency matrix (champ, class, origin) with max energy n (number of units in a comp) via breadth first search. Once trait / champ weighting is implemented, use that in BFS via Dijkstra.
+- Optimize using adjacency matrix (2d or 3d. champ, class, origin) with max energy n (number of units in a comp) via breadth first search. Once trait / champ weight + bias is implemented, use that in BFS via Dijkstra.
   - Also check out optimizations mentioned [here](https://redd.it/oams7w)
