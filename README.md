@@ -96,5 +96,5 @@ TODO
 
 ## TODO
 
-- Procedurally generate champ and trait data at compile time using game data
+- Procedurally generate champ and trait data at compile time using game data (`object.sets[6].champions`)
   - https://raw.communitydragon.org/latest/cdragon/tft/en_us.json
