@@ -93,3 +93,8 @@ TODO
 
 
 </details>
+
+## TODO
+
+- Procedurally generate champ and trait data at compile time using game data
+  - https://raw.communitydragon.org/latest/cdragon/tft/en_us.json
