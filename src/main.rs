@@ -1,202 +1,197 @@
-use rayon::prelude::*;
 use std::{
     cmp::Reverse,
     collections::BinaryHeap,
     fmt,
     io::{stdin, stdout, Read, Write},
     time::SystemTime,
+    ops::Index
 };
+use rayon::prelude::*;
+use Synergy::*;
 
-// Try a non branchless approach where we skip the assignment if 3rd is empty
-// Try another approach where we remove empty and opt for a pointer to a exact size array
-
-const ABOMINATION: usize = 0;
-const COVEN: usize = 1;
-const DAWNBRINGER: usize = 2;
-const DRACONIC: usize = 3;
-const DRAGONSLAYER: usize = 4;
-const ETERNAL: usize = 5;
-const FORGOTTEN: usize = 6;
-const HELLION: usize = 7;
-const IRONCLAD: usize = 8;
-const NIGHTBRINGER: usize = 9;
-const REDEEMED: usize = 10;
-const REVENANT: usize = 11;
-const VERDANT: usize = 12;
-
-const ASSASSIN: usize = 13;
-const BRAWLER: usize = 14;
-const CARETAKER: usize = 15;
-const CAVALIER: usize = 16;
-const CRUEL: usize = 17;
-const GODKING: usize = 18;
-const INVOKER: usize = 19;
-const KNIGHT: usize = 20;
-const LEGIONNAIRE: usize = 21;
-const MYSTIC: usize = 22;
-const RANGER: usize = 23;
-const RENEWER: usize = 24;
-const SKIRMISHER: usize = 25;
-const SPELLWEAVER: usize = 26;
-
-const EMPTY: usize = 27; // Add empty for fixed sized array and branchless implementation
-const SYNERGIES: usize = EMPTY + 1;
-
-const SYNERGY_NAMES: [&str; EMPTY] = [
-    "abomination",
-    "coven",
-    "dawnbringer",
-    "draconic",
-    "dragonslayer",
-    "eternal",
-    "forgotten",
-    "hellion",
-    "ironclad",
-    "nightbringer",
-    "redeemed",
-    "revenant",
-    "verdant",
-    "assassin",
-    "brawler",
-    "caretaker",
-    "cavalier",
-    "cruel",
-    "godking",
-    "invoker",
-    "knight",
-    "legionnaire",
-    "mystic",
-    "ranger",
-    "renewer",
-    "skirmisher",
-    "spellweaver",
-];
-
-const NUM_CHAMPS: usize = 58;
+// TODO generate all data up to core code using a macro or build.rs
+//      use manifest file from datadragon
+const SYNERGIES: usize = 27; 
+const NUM_CHAMPS: usize = 58; 
 const NUM_CHAMPS_NO_FIVE: usize = 50;
-const CHAMPS: [[usize; 3]; NUM_CHAMPS] = [
-    [REDEEMED, LEGIONNAIRE, EMPTY],         // Aatrox
-    [NIGHTBRINGER, RANGER, EMPTY],          // Aphelios
-    [VERDANT, DRACONIC, RANGER],            // Ashe
-    [ABOMINATION, SPELLWEAVER, EMPTY],      // Brand
-    [NIGHTBRINGER, DRAGONSLAYER, ASSASSIN], // Diana
-    [FORGOTTEN, LEGIONNAIRE, EMPTY],        // Draven
-    [DAWNBRINGER, BRAWLER, EMPTY],          // Gragas
-    [FORGOTTEN, CAVALIER, EMPTY],           // Hecarim
-    [REVENANT, INVOKER, RENEWER],           // Ivern
-    [IRONCLAD, SKIRMISHER, EMPTY],          // Jax
-    [ABOMINATION, LEGIONNAIRE, EMPTY],      // Kalista
-    [DAWNBRINGER, INVOKER, EMPTY],          // Karma
-    [FORGOTTEN, ASSASSIN, EMPTY],           // Katarina
-    [HELLION, SKIRMISHER, EMPTY],           // Kennen
-    [DAWNBRINGER, ASSASSIN, EMPTY],         // Khazix
-    [HELLION, CAVALIER, EMPTY],             // Kled
-    [COVEN, ASSASSIN, EMPTY],               // Leblanc
-    [NIGHTBRINGER, SKIRMISHER, EMPTY],      // LeeSin
-    [REDEEMED, KNIGHT, EMPTY],              // Leona
-    [COVEN, RENEWER, EMPTY],                // Lissandra
-    [HELLION, MYSTIC, EMPTY],               // Lulu
-    [REDEEMED, MYSTIC, EMPTY],              // Lux
-    [DRAGONSLAYER, LEGIONNAIRE, EMPTY],     // Mordekaiser
-    [COVEN, NIGHTBRINGER, MYSTIC],          // Morgana
-    [IRONCLAD, KNIGHT, EMPTY],              // Nautilus
-    [DAWNBRINGER, SKIRMISHER, EMPTY],       // Nidalee
-    [REVENANT, ASSASSIN, EMPTY],            // Nocturne
-    [ABOMINATION, BRAWLER, EMPTY],          // Nunu
-    [DRAGONSLAYER, SKIRMISHER, EMPTY],      // Pantheon
-    [HELLION, KNIGHT, EMPTY],               // Poppy
-    [REDEEMED, IRONCLAD, CAVALIER],         // Rell
-    [DAWNBRINGER, LEGIONNAIRE, EMPTY],      // Riven
-    [ABOMINATION, FORGOTTEN, MYSTIC],       // Ryze
-    [NIGHTBRINGER, CAVALIER, EMPTY],        // Sejuani
-    [DRACONIC, BRAWLER, EMPTY],             // Sett
-    [DAWNBRINGER, RENEWER, EMPTY],          // Soraka
-    [REDEEMED, INVOKER, EMPTY],             // Syndra
-    [VERDANT, KNIGHT, EMPTY],               // Taric
-    [FORGOTTEN, KNIGHT, EMPTY],             // Thresh
-    [DRAGONSLAYER, SKIRMISHER, EMPTY],      // Trundle
-    [DRACONIC, SKIRMISHER, EMPTY],          // Udyr
-    [REDEEMED, RANGER, EMPTY],              // Varus
-    [FORGOTTEN, RANGER, EMPTY],             // Vayne
-    [REDEEMED, SPELLWEAVER, EMPTY],         // Velkoz
-    [FORGOTTEN, SPELLWEAVER, EMPTY],        // Viktor
-    [NIGHTBRINGER, RENEWER, EMPTY],         // Vladmir
-    [FORGOTTEN, BRAWLER, EMPTY],            // Warwick
-    [NIGHTBRINGER, LEGIONNAIRE, EMPTY],     // Yasuo
-    [HELLION, SPELLWEAVER, EMPTY],          // Ziggs
-    [DRACONIC, SPELLWEAVER, EMPTY],         // Zyra
-    [NIGHTBRINGER, KNIGHT, GODKING],        // Darius
-    [DAWNBRINGER, KNIGHT, GODKING],         // Garen
-    [DRACONIC, CARETAKER, RENEWER],         // Heimerdinger
-    [REDEEMED, VERDANT, LEGIONNAIRE],       // Kayle
-    [ETERNAL, MYSTIC, RANGER],              // Kindred
-    [HELLION, CRUEL, INVOKER],              // Teemo
-    [FORGOTTEN, ASSASSIN, SKIRMISHER],      // Viego
-    [REVENANT, BRAWLER, EMPTY],             // Volibear
+
+#[derive(Copy, Clone)]
+enum Synergy {
+    Abomination,
+    Coven,
+    Dawnbringer,
+    Draconic,
+    Dragonslayer,
+    Eternal,
+    Forgotten,
+    Hellion,
+    Ironclad,
+    Nightbringer,
+    Redeemed,
+    Revenant,
+    Verdant,
+    
+    Assassin,
+    Brawler,
+    Caretaker,
+    Cavalier,
+    Cruel,
+    Godking,
+    Invoker,
+    Knight,
+    Legionnaire,
+    Mystic,
+    Ranger,
+    Renewer,
+    Skirmisher,
+    Spellweaver,
+}
+const CHAMPS: [(&str, &[Synergy]); NUM_CHAMPS] = [
+    ("aatrox", &[Redeemed, Legionnaire]),
+    ("aphelios", &[Nightbringer, Ranger]),
+    ("ashe", &[Verdant, Draconic, Ranger]),
+    ("brand", &[Abomination, Spellweaver]),
+    ("diana", &[Nightbringer, Dragonslayer, Assassin]),
+    ("draven", &[Forgotten, Legionnaire]),
+    ("gragas", &[Dawnbringer, Brawler]),
+    ("hecarim", &[Forgotten, Cavalier]),
+    ("ivern", &[Revenant, Invoker, Renewer]),
+    ("jax", &[Ironclad, Skirmisher]),
+    ("kalista", &[Abomination, Legionnaire]),
+    ("karma", &[Dawnbringer, Invoker]),
+    ("katarina", &[Forgotten, Assassin]),
+    ("kennen", &[Hellion, Skirmisher]),
+    ("khazix", &[Dawnbringer, Assassin]),
+    ("kled", &[Hellion, Cavalier]),
+    ("leblanc", &[Coven, Assassin]),
+    ("leesin", &[Nightbringer, Skirmisher]),
+    ("leona", &[Redeemed, Knight]),
+    ("lissandra", &[Coven, Renewer]),
+    ("lulu", &[Hellion, Mystic]),
+    ("lux", &[Redeemed, Mystic]),
+    ("mordekaiser", &[Dragonslayer, Legionnaire]),
+    ("morgana", &[Coven, Nightbringer, Mystic]),
+    ("nautilus", &[Ironclad, Knight]),
+    ("nidalee", &[Dawnbringer, Skirmisher]),
+    ("nocturne", &[Revenant, Assassin]),
+    ("nunu", &[Abomination, Brawler]),
+    ("pantheon", &[Dragonslayer, Skirmisher]),
+    ("poppy", &[Hellion, Knight]),
+    ("rell", &[Redeemed, Ironclad, Cavalier]),
+    ("riven", &[Dawnbringer, Legionnaire]),
+    ("ryze", &[Abomination, Forgotten, Mystic]),
+    ("sejuani", &[Nightbringer, Cavalier]),
+    ("sett", &[Draconic, Brawler]),
+    ("soraka", &[Dawnbringer, Renewer]),
+    ("syndra", &[Redeemed, Invoker]),
+    ("taric", &[Verdant, Knight]),
+    ("thresh", &[Forgotten, Knight]),
+    ("trundle", &[Dragonslayer, Skirmisher]),
+    ("udyr", &[Draconic, Skirmisher]),
+    ("varus", &[Redeemed, Ranger]),
+    ("vayne", &[Forgotten, Ranger]),
+    ("velkoz", &[Redeemed, Spellweaver]),
+    ("viktor", &[Forgotten, Spellweaver]),
+    ("vladmir", &[Nightbringer, Renewer]),
+    ("warwick", &[Forgotten, Brawler]),
+    ("yasuo", &[Nightbringer, Legionnaire]),
+    ("ziggs", &[Hellion, Spellweaver]),
+    ("zyra", &[Draconic, Spellweaver]),
+    ("darius", &[Nightbringer, Knight, Godking]),
+    ("garen", &[Dawnbringer, Knight, Godking]),
+    ("heimerdinger", &[Draconic, Caretaker, Renewer]),
+    ("kayle", &[Redeemed, Verdant, Legionnaire]),
+    ("kindred", &[Eternal, Mystic, Ranger]),
+    ("teemo", &[Hellion, Cruel, Invoker]),
+    ("viego", &[Forgotten, Assassin, Skirmisher]),
+    ("volibear", &[Revenant, Brawler])
 ];
 
-const CHAMP_NAMES: [&str; NUM_CHAMPS] = [
-    "aatrox",
-    "aphelios",
-    "ashe",
-    "brand",
-    "diana",
-    "draven",
-    "gragas",
-    "hecarim",
-    "ivern",
-    "jax",
-    "kalista",
-    "karma",
-    "katarina",
-    "kennen",
-    "khazix",
-    "kled",
-    "leblanc",
-    "leesin",
-    "leona",
-    "lissandra",
-    "lulu",
-    "lux",
-    "mordekaiser",
-    "morgana",
-    "nautilus",
-    "nidalee",
-    "nocturne",
-    "nunu",
-    "pantheon",
-    "poppy",
-    "rell",
-    "riven",
-    "ryze",
-    "sejuani",
-    "sett",
-    "soraka",
-    "syndra",
-    "taric",
-    "thresh",
-    "trundle",
-    "udyr",
-    "varus",
-    "vayne",
-    "velkoz",
-    "viktor",
-    "vladmir",
-    "warwick",
-    "yasuo",
-    "ziggs",
-    "zyra",
-    "darius",
-    "garen",
-    "heimerdinger",
-    "kayle",
-    "kindred",
-    "teemo",
-    "viego",
-    "volibear",
-];
+fn calc_synergies(
+    comp: &Vec<usize>,
+    champ_forces: &Vec<usize>,
+    calc_unique_synergies: bool,
+) -> usize {
+    if !champ_forces.iter().all(|champ| comp.contains(champ)) {
+        return 0;
+    }
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone)]
+    let mut synergy_tally = [0usize; SYNERGIES];
+    for champ_index in comp {
+        for synergy in CHAMPS[*champ_index].1 {
+            synergy_tally[*synergy as usize] += 1;
+        }
+    }
+
+    let mut active_synergies = 0;
+    if synergy_tally[Abomination] >= 3 {
+        active_synergies += synergy_tally[Abomination]
+    }
+    if synergy_tally[Coven] >= 3 {
+        active_synergies += 3
+    }
+    active_synergies += synergy_tally[Dawnbringer] / 2 * 2;
+    match synergy_tally[Draconic] {
+        3 | 5 => active_synergies += synergy_tally[Draconic],
+        _ => (),
+    }
+    active_synergies += synergy_tally[Dragonslayer] / 2 * 2;
+    active_synergies += synergy_tally[Forgotten] / 3 * 3;
+    match synergy_tally[Hellion] {
+        3 | 5 | 7 => active_synergies += synergy_tally[Hellion],
+        _ => (),
+    }
+    if synergy_tally[Ironclad] >= 2 {
+        active_synergies += synergy_tally[Ironclad]
+    }
+    active_synergies += synergy_tally[Nightbringer] / 2 * 2;
+    active_synergies += synergy_tally[Redeemed] / 3 * 3;
+    if synergy_tally[Revenant] >= 2 {
+        active_synergies += synergy_tally[Revenant]
+    }
+    if synergy_tally[Verdant] >= 2 {
+        active_synergies += synergy_tally[Verdant]
+    }
+    active_synergies += synergy_tally[Assassin] / 2 * 2;
+    active_synergies += synergy_tally[Brawler] / 2 * 2;
+    if synergy_tally[Cavalier] >= 2 {
+        active_synergies += synergy_tally[Cavalier]
+    }
+    active_synergies += synergy_tally[Invoker] / 2 * 2;
+    active_synergies += synergy_tally[Knight] / 2 * 2;
+    active_synergies += synergy_tally[Legionnaire] / 2 * 2;
+    active_synergies += synergy_tally[Mystic] / 2 * 2;
+    active_synergies += synergy_tally[Ranger] / 2 * 2;
+    active_synergies += synergy_tally[Renewer] / 2 * 2;
+    active_synergies += synergy_tally[Skirmisher] / 3 * 3;
+    active_synergies += synergy_tally[Spellweaver] / 2 * 2;
+    if calc_unique_synergies {
+        active_synergies += synergy_tally[Eternal];
+        active_synergies += synergy_tally[Caretaker];
+        active_synergies += synergy_tally[Cruel];
+        if synergy_tally[Godking] >= 1 {
+            active_synergies += 1
+        }
+    }
+    active_synergies
+}
+
+/* ############################################################
+ * CORE CODE BELOW!
+ * DO NOT EDIT ANYTHING BELOW UNLESS YOU KNOW WHAT YOU'RE DOING
+ * ############################################################
+ */
+
+const DEFAULT_TOP_N: usize = 10;
+
+impl Index<Synergy> for [usize; SYNERGIES] {
+    type Output = usize;
+    fn index(&self, index: Synergy) -> &Self::Output {
+        &self[index as usize]
+    }
+}
+
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
 struct CompSynergy {
     synergy: usize,
     indices: Vec<usize>,
@@ -207,13 +202,11 @@ impl fmt::Display for CompSynergy {
         let champ_names: Vec<&str> = self
             .indices
             .iter()
-            .map(|i| return CHAMP_NAMES[*i])
+            .map(|i| return CHAMPS[*i].0)
             .collect();
         formatter.write_str(format!("{}: {:?}", self.synergy, champ_names).as_str())
     }
 }
-
-const DEFAULT_TOP_N: usize = 10;
 
 fn main() {
     let mut input_text = String::new();
@@ -255,47 +248,11 @@ fn main() {
         vec![]
     } else {
         trim.split(",")
-            .map(|champ| {
-                CHAMP_NAMES
+            .map(|champ_force| {
+                CHAMPS
                     .iter()
-                    .position(|name| *name == champ.trim().to_lowercase().as_str())
+                    .position(|champ| champ.0 == champ_force.trim().to_lowercase().as_str())
                     .expect("invalid champ name")
-            })
-            .collect()
-    };
-
-    print!("Force synergies (e.g. \"assassin:4, brawler:2\"): ");
-    stdout().flush().unwrap();
-    input_text.clear();
-    stdin()
-        .read_line(&mut input_text)
-        .expect("failed to read input");
-    let trim = input_text.trim();
-    let synergy_forces: Vec<[usize; 2]> = if trim.is_empty() {
-        vec![]
-    } else {
-        trim.split(",")
-            .map(|synergy_str| {
-                let mut synergy_parts = synergy_str.split(":");
-                // [0] is the synergy index, [1] is the minimum required
-                let input_name = synergy_parts
-                    .next()
-                    .expect("synergy force missing name")
-                    .trim()
-                    .to_lowercase();
-
-                [
-                    SYNERGY_NAMES
-                        .iter()
-                        .position(|name| *name == input_name)
-                        .expect("invalid synergy name"),
-                    synergy_parts
-                        .next()
-                        .expect("synergy missing min number")
-                        .trim()
-                        .parse()
-                        .expect("could not parse number"),
-                ]
             })
             .collect()
     };
@@ -319,10 +276,9 @@ fn main() {
     let num_combinations = n_choose_k(num_champs, num_units);
     let num_chunks = num_champs - num_units + 1;
     print!(
-        "Generating and analyzing {} comps with {} champs and {} synergies forced using {} threads\n+{}+\n|",
+        "Generating and analyzing {} comps with {} champs using {} threads\n+{}+\n|",
         num_combinations,
         champ_forces.len(),
-        synergy_forces.len(),
         rayon::current_num_threads(),
         "-".repeat(num_chunks)
     );
@@ -343,7 +299,6 @@ fn main() {
                 let synergy = calc_synergies(
                     &indices,
                     &champ_forces,
-                    &synergy_forces,
                     calc_unique_synergies,
                 );
 
@@ -379,7 +334,7 @@ fn main() {
             min_heap.into_vec()
         })
         .collect_into_vec(&mut chunks_top_n_comps);
-
+    
     // Combine and distill top N from chunks
     let mut top_n_comps = chunks_top_n_comps.concat();
     top_n_comps.sort_unstable();
@@ -394,88 +349,6 @@ fn main() {
     stdin().read(&mut [0]).unwrap();
 }
 
-fn calc_synergies(
-    comp: &Vec<usize>,
-    champ_forces: &Vec<usize>,
-    synergy_forces: &Vec<[usize; 2]>,
-    calc_unique_synergies: bool,
-) -> usize {
-    if !champ_forces.iter().all(|champ| comp.contains(champ)) {
-        return 0;
-    }
-
-    let mut synergy_tally = [0usize; SYNERGIES];
-    for champ_index in comp {
-        for synergy in &CHAMPS[*champ_index] {
-            synergy_tally[*synergy] += 1;
-        }
-    }
-
-    if synergy_forces
-        .iter()
-        .any(|synergy_force| synergy_tally[synergy_force[0]] != synergy_force[1])
-    {
-        return 0;
-    }
-
-    let mut active_synergies = 0;
-    if synergy_tally[ABOMINATION] >= 3 {
-        active_synergies += synergy_tally[ABOMINATION]
-    }
-    if synergy_tally[COVEN] >= 3 {
-        active_synergies += 3
-    }
-    active_synergies += synergy_tally[DAWNBRINGER] / 2 * 2;
-    match synergy_tally[DRACONIC] {
-        3 | 5 => active_synergies += synergy_tally[DRACONIC],
-        _ => (),
-    }
-    active_synergies += synergy_tally[DRAGONSLAYER] / 2 * 2;
-    active_synergies += synergy_tally[FORGOTTEN] / 3 * 3;
-    match synergy_tally[HELLION] {
-        3 | 5 | 7 => active_synergies += synergy_tally[HELLION],
-        _ => (),
-    }
-    if synergy_tally[IRONCLAD] >= 2 {
-        active_synergies += synergy_tally[IRONCLAD]
-    }
-    active_synergies += synergy_tally[NIGHTBRINGER] / 2 * 2;
-    active_synergies += synergy_tally[REDEEMED] / 3 * 3;
-    if synergy_tally[REVENANT] >= 2 {
-        active_synergies += synergy_tally[REVENANT]
-    }
-    if synergy_tally[VERDANT] >= 2 {
-        active_synergies += synergy_tally[VERDANT]
-    }
-    active_synergies += synergy_tally[ASSASSIN] / 2 * 2;
-    active_synergies += synergy_tally[BRAWLER] / 2 * 2;
-    if synergy_tally[CAVALIER] >= 2 {
-        active_synergies += synergy_tally[CAVALIER]
-    }
-    active_synergies += synergy_tally[INVOKER] / 2 * 2;
-    active_synergies += synergy_tally[KNIGHT] / 2 * 2;
-    active_synergies += synergy_tally[LEGIONNAIRE] / 2 * 2;
-    active_synergies += synergy_tally[MYSTIC] / 2 * 2;
-    active_synergies += synergy_tally[RANGER] / 2 * 2;
-    active_synergies += synergy_tally[RENEWER] / 2 * 2;
-    active_synergies += synergy_tally[SKIRMISHER] / 3 * 3;
-    active_synergies += synergy_tally[SPELLWEAVER] / 2 * 2;
-    if calc_unique_synergies {
-        active_synergies += synergy_tally[ETERNAL];
-        active_synergies += synergy_tally[CARETAKER];
-        active_synergies += synergy_tally[CRUEL];
-        if synergy_tally[GODKING] >= 1 {
-            active_synergies += 1
-        }
-    }
-    active_synergies
-}
-
-/*
- * n Amount of total options
- * k Amount to choose from of the options
- * returns Number of possible combinations
- */
 fn n_choose_k(n: usize, k: usize) -> usize {
     let mut combs = 1;
     for i in 0..k {
