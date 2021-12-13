@@ -1,18 +1,18 @@
+use rayon::prelude::*;
 use std::{
     cmp::Reverse,
     collections::BinaryHeap,
     fmt,
     io::{stdin, stdout, Read, Write},
+    ops::Index,
     time::SystemTime,
-    ops::Index
 };
-use rayon::prelude::*;
 use Synergy::*;
 
 // TODO generate all data up to core code using a macro or build.rs
 //      use manifest file from datadragon
-const SYNERGIES: usize = 27; 
-const NUM_CHAMPS: usize = 58; 
+const SYNERGIES: usize = 27;
+const NUM_CHAMPS: usize = 58;
 const NUM_CHAMPS_NO_FIVE: usize = 50;
 
 #[derive(Copy, Clone)]
@@ -30,7 +30,7 @@ enum Synergy {
     Redeemed,
     Revenant,
     Verdant,
-    
+
     Assassin,
     Brawler,
     Caretaker,
@@ -104,7 +104,7 @@ const CHAMPS: [(&str, &[Synergy]); NUM_CHAMPS] = [
     ("kindred", &[Eternal, Mystic, Ranger]),
     ("teemo", &[Hellion, Cruel, Invoker]),
     ("viego", &[Forgotten, Assassin, Skirmisher]),
-    ("volibear", &[Revenant, Brawler])
+    ("volibear", &[Revenant, Brawler]),
 ];
 
 fn calc_synergies(
@@ -199,11 +199,7 @@ struct CompSynergy {
 
 impl fmt::Display for CompSynergy {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        let champ_names: Vec<&str> = self
-            .indices
-            .iter()
-            .map(|i| return CHAMPS[*i].0)
-            .collect();
+        let champ_names: Vec<&str> = self.indices.iter().map(|i| return CHAMPS[*i].0).collect();
         formatter.write_str(format!("{}: {:?}", self.synergy, champ_names).as_str())
     }
 }
@@ -296,11 +292,7 @@ fn main() {
 
             while indices[0] == init_index && indices[k_sub_1] < num_champs {
                 // Calculate the amount of active synergies
-                let synergy = calc_synergies(
-                    &indices,
-                    &champ_forces,
-                    calc_unique_synergies,
-                );
+                let synergy = calc_synergies(&indices, &champ_forces, calc_unique_synergies);
 
                 // Add comp to top N
                 let min = min_heap.peek().map_or(0, |m| m.0.synergy);
@@ -334,7 +326,7 @@ fn main() {
             min_heap.into_vec()
         })
         .collect_into_vec(&mut chunks_top_n_comps);
-    
+
     // Combine and distill top N from chunks
     let mut top_n_comps = chunks_top_n_comps.concat();
     top_n_comps.sort_unstable();

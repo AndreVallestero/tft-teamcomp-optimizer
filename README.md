@@ -4,7 +4,7 @@
 
 This project generates the most efficient team comps (synergy-wise) within a given amount of units available. It is adaptable for different sets and will work between patches with minor changes.
 
-## Optimizations
+## Benchmarks
 
 Generate 8 unit comps, 100 run average, using Rust unless specified
 
