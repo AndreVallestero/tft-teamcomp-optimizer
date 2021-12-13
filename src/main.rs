@@ -266,8 +266,6 @@ fn main() {
         trim.parse().expect("could not parse number")
     };
 
-    let time_start = SystemTime::now();
-
     // Log num comps and threads
     let num_combinations = n_choose_k(num_champs, num_units);
     let num_chunks = num_champs - num_units + 1;
@@ -279,6 +277,7 @@ fn main() {
         "-".repeat(num_chunks)
     );
     stdout().flush().unwrap();
+    let time_start = SystemTime::now();
 
     let mut chunks_top_n_comps = Vec::new();
     (0..num_chunks)
