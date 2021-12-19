@@ -8,7 +8,7 @@ use {
         cmp::Reverse,
         collections::{BTreeMap, BinaryHeap},
         fs::File,
-        io::{stdin, stdout, Read, Write},
+        io::{stdin, stdout, Read, Write, BufReader, BufWriter},
         time::SystemTime,
     },
 };
@@ -63,16 +63,16 @@ const DEFAULT_TOP_N: usize = 10;
 fn main() {
     // Try to load en_us.json
     let tft: Tft = if let Ok(file) = File::open("en_us.json") {
-        serde_json::from_reader(file).unwrap()
+        serde_json::from_reader(BufReader::new(file)).unwrap()
     } else {
         // Download and save if it doesn't exist
         println!("TFT data not found, downloading from Data Dragon");
         let tft_resp = ureq::get("https://raw.communitydragon.org/latest/cdragon/tft/en_us.json")
             .call()
             .unwrap();
-        let mut file = File::create("en_us.json").unwrap();
+        let file = File::create("en_us.json").unwrap();
         let tft_string = tft_resp.into_string().unwrap();
-        file.write_all(tft_string.as_bytes()).unwrap();
+        BufWriter::new(file).write_all(tft_string.as_bytes()).unwrap();
         serde_json::from_str(tft_string.as_str()).unwrap()
     };
 
@@ -176,8 +176,8 @@ fn main() {
                     current_set
                         .traits
                         .iter()
-                        .position(|tft_trait| tft_trait.name == force_trait)
-                        .expect("invalid trait name"),
+                        .position(|tft_trait| tft_trait.name.to_lowercase() == force_trait)
+                        .expect(format!("invalid trait name {}", force_trait).as_str()),
                     trait_parts
                         .next()
                         .expect("trait missing min number")
