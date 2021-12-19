@@ -1,210 +1,81 @@
-use rayon::prelude::*;
-use std::{
-    cmp::Reverse,
-    collections::BinaryHeap,
-    fmt,
-    io::{stdin, stdout, Read, Write},
-    ops::Index,
-    time::SystemTime,
+#![feature(map_first_last)]
+#![feature(bool_to_option)]
+
+use {
+    rayon::prelude::*,
+    serde::Deserialize,
+    std::{
+        cmp::Reverse,
+        collections::{BTreeMap, BinaryHeap},
+        fs::File,
+        io::{stdin, stdout, Read, Write},
+        time::SystemTime,
+    },
 };
-use Synergy::*;
 
-// TODO generate all data up to core code using a macro or build.rs
-//      use manifest file from datadragon
-const SYNERGIES: usize = 27;
-const NUM_CHAMPS: usize = 58;
-const NUM_CHAMPS_NO_FIVE: usize = 50;
-
-#[derive(Copy, Clone)]
-enum Synergy {
-    Abomination,
-    Coven,
-    Dawnbringer,
-    Draconic,
-    Dragonslayer,
-    Eternal,
-    Forgotten,
-    Hellion,
-    Ironclad,
-    Nightbringer,
-    Redeemed,
-    Revenant,
-    Verdant,
-
-    Assassin,
-    Brawler,
-    Caretaker,
-    Cavalier,
-    Cruel,
-    Godking,
-    Invoker,
-    Knight,
-    Legionnaire,
-    Mystic,
-    Ranger,
-    Renewer,
-    Skirmisher,
-    Spellweaver,
-}
-const CHAMPS: [(&str, &[Synergy]); NUM_CHAMPS] = [
-    ("aatrox", &[Redeemed, Legionnaire]),
-    ("aphelios", &[Nightbringer, Ranger]),
-    ("ashe", &[Verdant, Draconic, Ranger]),
-    ("brand", &[Abomination, Spellweaver]),
-    ("diana", &[Nightbringer, Dragonslayer, Assassin]),
-    ("draven", &[Forgotten, Legionnaire]),
-    ("gragas", &[Dawnbringer, Brawler]),
-    ("hecarim", &[Forgotten, Cavalier]),
-    ("ivern", &[Revenant, Invoker, Renewer]),
-    ("jax", &[Ironclad, Skirmisher]),
-    ("kalista", &[Abomination, Legionnaire]),
-    ("karma", &[Dawnbringer, Invoker]),
-    ("katarina", &[Forgotten, Assassin]),
-    ("kennen", &[Hellion, Skirmisher]),
-    ("khazix", &[Dawnbringer, Assassin]),
-    ("kled", &[Hellion, Cavalier]),
-    ("leblanc", &[Coven, Assassin]),
-    ("leesin", &[Nightbringer, Skirmisher]),
-    ("leona", &[Redeemed, Knight]),
-    ("lissandra", &[Coven, Renewer]),
-    ("lulu", &[Hellion, Mystic]),
-    ("lux", &[Redeemed, Mystic]),
-    ("mordekaiser", &[Dragonslayer, Legionnaire]),
-    ("morgana", &[Coven, Nightbringer, Mystic]),
-    ("nautilus", &[Ironclad, Knight]),
-    ("nidalee", &[Dawnbringer, Skirmisher]),
-    ("nocturne", &[Revenant, Assassin]),
-    ("nunu", &[Abomination, Brawler]),
-    ("pantheon", &[Dragonslayer, Skirmisher]),
-    ("poppy", &[Hellion, Knight]),
-    ("rell", &[Redeemed, Ironclad, Cavalier]),
-    ("riven", &[Dawnbringer, Legionnaire]),
-    ("ryze", &[Abomination, Forgotten, Mystic]),
-    ("sejuani", &[Nightbringer, Cavalier]),
-    ("sett", &[Draconic, Brawler]),
-    ("soraka", &[Dawnbringer, Renewer]),
-    ("syndra", &[Redeemed, Invoker]),
-    ("taric", &[Verdant, Knight]),
-    ("thresh", &[Forgotten, Knight]),
-    ("trundle", &[Dragonslayer, Skirmisher]),
-    ("udyr", &[Draconic, Skirmisher]),
-    ("varus", &[Redeemed, Ranger]),
-    ("vayne", &[Forgotten, Ranger]),
-    ("velkoz", &[Redeemed, Spellweaver]),
-    ("viktor", &[Forgotten, Spellweaver]),
-    ("vladmir", &[Nightbringer, Renewer]),
-    ("warwick", &[Forgotten, Brawler]),
-    ("yasuo", &[Nightbringer, Legionnaire]),
-    ("ziggs", &[Hellion, Spellweaver]),
-    ("zyra", &[Draconic, Spellweaver]),
-    ("darius", &[Nightbringer, Knight, Godking]),
-    ("garen", &[Dawnbringer, Knight, Godking]),
-    ("heimerdinger", &[Draconic, Caretaker, Renewer]),
-    ("kayle", &[Redeemed, Verdant, Legionnaire]),
-    ("kindred", &[Eternal, Mystic, Ranger]),
-    ("teemo", &[Hellion, Cruel, Invoker]),
-    ("viego", &[Forgotten, Assassin, Skirmisher]),
-    ("volibear", &[Revenant, Brawler]),
-];
-
-fn calc_synergies(
-    comp: &Vec<usize>,
-    champ_forces: &Vec<usize>,
-    calc_unique_synergies: bool,
-) -> usize {
-    if !champ_forces.iter().all(|champ| comp.contains(champ)) {
-        return 0;
-    }
-
-    let mut synergy_tally = [0usize; SYNERGIES];
-    for champ_index in comp {
-        for synergy in CHAMPS[*champ_index].1 {
-            synergy_tally[*synergy as usize] += 1;
-        }
-    }
-
-    let mut active_synergies = 0;
-    if synergy_tally[Abomination] >= 3 {
-        active_synergies += synergy_tally[Abomination]
-    }
-    if synergy_tally[Coven] >= 3 {
-        active_synergies += 3
-    }
-    active_synergies += synergy_tally[Dawnbringer] / 2 * 2;
-    match synergy_tally[Draconic] {
-        3 | 5 => active_synergies += synergy_tally[Draconic],
-        _ => (),
-    }
-    active_synergies += synergy_tally[Dragonslayer] / 2 * 2;
-    active_synergies += synergy_tally[Forgotten] / 3 * 3;
-    match synergy_tally[Hellion] {
-        3 | 5 | 7 => active_synergies += synergy_tally[Hellion],
-        _ => (),
-    }
-    if synergy_tally[Ironclad] >= 2 {
-        active_synergies += synergy_tally[Ironclad]
-    }
-    active_synergies += synergy_tally[Nightbringer] / 2 * 2;
-    active_synergies += synergy_tally[Redeemed] / 3 * 3;
-    if synergy_tally[Revenant] >= 2 {
-        active_synergies += synergy_tally[Revenant]
-    }
-    if synergy_tally[Verdant] >= 2 {
-        active_synergies += synergy_tally[Verdant]
-    }
-    active_synergies += synergy_tally[Assassin] / 2 * 2;
-    active_synergies += synergy_tally[Brawler] / 2 * 2;
-    if synergy_tally[Cavalier] >= 2 {
-        active_synergies += synergy_tally[Cavalier]
-    }
-    active_synergies += synergy_tally[Invoker] / 2 * 2;
-    active_synergies += synergy_tally[Knight] / 2 * 2;
-    active_synergies += synergy_tally[Legionnaire] / 2 * 2;
-    active_synergies += synergy_tally[Mystic] / 2 * 2;
-    active_synergies += synergy_tally[Ranger] / 2 * 2;
-    active_synergies += synergy_tally[Renewer] / 2 * 2;
-    active_synergies += synergy_tally[Skirmisher] / 3 * 3;
-    active_synergies += synergy_tally[Spellweaver] / 2 * 2;
-    if calc_unique_synergies {
-        active_synergies += synergy_tally[Eternal];
-        active_synergies += synergy_tally[Caretaker];
-        active_synergies += synergy_tally[Cruel];
-        if synergy_tally[Godking] >= 1 {
-            active_synergies += 1
-        }
-    }
-    active_synergies
+#[derive(Deserialize)]
+struct Tft {
+    sets: BTreeMap<String, Set>,
 }
 
-/* ############################################################
- * CORE CODE BELOW!
- * DO NOT EDIT ANYTHING BELOW UNLESS YOU KNOW WHAT YOU'RE DOING
- * ############################################################
- */
+#[derive(Deserialize)]
+struct Set {
+    champions: Vec<Champion>,
+    traits: Vec<Trait>,
+}
 
-const DEFAULT_TOP_N: usize = 10;
+#[derive(Deserialize)]
+struct Champion {
+    name: String,
+    cost: usize,
+    traits: Vec<String>,
+}
 
-impl Index<Synergy> for [usize; SYNERGIES] {
-    type Output = usize;
-    fn index(&self, index: Synergy) -> &Self::Output {
-        &self[index as usize]
-    }
+#[derive(Deserialize)]
+struct Trait {
+    effects: Vec<Effect>,
+    name: String,
+}
+
+#[derive(Deserialize)]
+struct Effect {
+    maxUnits: usize,
+    minUnits: usize,
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone)]
-struct CompSynergy {
-    synergy: usize,
+struct TeamComp {
+    active_traits: usize,
     indices: Vec<usize>,
 }
 
-impl fmt::Display for CompSynergy {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        let champ_names: Vec<&str> = self.indices.iter().map(|i| return CHAMPS[*i].0).collect();
-        formatter.write_str(format!("{}: {:?}", self.synergy, champ_names).as_str())
+impl TeamComp {
+    fn print(self, champs: &Vec<&Champion>) {
+        let champ_names: Vec<String> = self.indices.iter().map(|i| return champs[*i].name.clone()).collect();
+        let mut repr = format!("{}: {:?}", self.active_traits, champ_names).replace("\"", "").replace("[", "").replace("\\", "");
+        repr.pop();
+        println!("{}", repr);
     }
 }
 
+const DEFAULT_TOP_N: usize = 10;
+
 fn main() {
+    // Try to load en_us.json
+    let tft: Tft = if let Ok(file) = File::open("en_us.json") {
+        serde_json::from_reader(file).unwrap()
+    } else {
+        // Download and save if it doesn't exist
+        println!("TFT data not found, downloading from Data Dragon");
+        let tft_resp = ureq::get("https://raw.communitydragon.org/latest/cdragon/tft/en_us.json")
+            .call()
+            .unwrap();
+        let mut file = File::create("en_us.json").unwrap();
+        let tft_string = tft_resp.into_string().unwrap();
+        file.write_all(tft_string.as_bytes()).unwrap();
+        serde_json::from_str(tft_string.as_str()).unwrap()
+    };
+
     let mut input_text = String::new();
     print!("Number of units: ");
     stdout().flush().unwrap();
@@ -213,45 +84,21 @@ fn main() {
         .expect("failed to read input");
     let num_units: usize = input_text.trim().parse().expect("could not parse number");
 
-    print!("Include 5 costs? [y/N] ");
+    print!("Include 5+ costs? [y/N] ");
     stdout().flush().unwrap();
     input_text.clear();
     stdin()
         .read_line(&mut input_text)
         .expect("failed to read input");
-    let num_champs = match input_text.trim().to_lowercase().as_str() {
-        "y" => NUM_CHAMPS,
-        _ => NUM_CHAMPS_NO_FIVE,
-    };
+    let exclude_5_costs = input_text.trim().to_lowercase().as_str() != "y";
 
-    print!("Calculate unique synergies? [y/N] ");
+    print!("Calculate unique traits? [y/N] ");
     stdout().flush().unwrap();
     input_text.clear();
     stdin()
         .read_line(&mut input_text)
         .expect("failed to read input");
-    let calc_unique_synergies = input_text.trim().to_lowercase().as_str() == "y";
-
-    print!("Force champs (e.g. \"leona, velkoz\"): ");
-    stdout().flush().unwrap();
-    input_text.clear();
-    stdin()
-        .read_line(&mut input_text)
-        .expect("failed to read input");
-
-    let trim = input_text.trim();
-    let champ_forces: Vec<usize> = if trim.is_empty() {
-        vec![]
-    } else {
-        trim.split(",")
-            .map(|champ_force| {
-                CHAMPS
-                    .iter()
-                    .position(|champ| champ.0 == champ_force.trim().to_lowercase().as_str())
-                    .expect("invalid champ name")
-            })
-            .collect()
-    };
+    let calc_unique_traits = input_text.trim().to_lowercase().as_str() == "y";
 
     print!("Number of results: [{}] ", DEFAULT_TOP_N);
     stdout().flush().unwrap();
@@ -266,15 +113,118 @@ fn main() {
         trim.parse().expect("could not parse number")
     };
 
+    // Format data
+    let (_, current_set) = tft.sets.last_key_value().unwrap();
+    let champs: Vec<&Champion> = current_set
+        .champions
+        .iter()
+        .filter(|champ| !champ.traits.is_empty() && !(exclude_5_costs && champ.cost > 4))
+        .collect();
+    let champ_traits = champs
+        .iter()
+        .map(|champ| {
+            champ
+                .traits
+                .iter()
+                .map(|champ_trait| {
+                    current_set
+                        .traits
+                        .iter()
+                        .position(|tft_trait| tft_trait.name == *champ_trait)
+                        .expect("no matching champ trait found")
+                })
+                .collect()
+        })
+        .collect();
+    let traits = current_set
+        .traits
+        .iter()
+        .map(|tft_trait| {
+            tft_trait
+                .effects
+                .iter()
+                .rev()
+                .filter_map(|effect| {
+                    (calc_unique_traits || effect.maxUnits > 1)
+                        .then_some([effect.minUnits, effect.maxUnits])
+                })
+                .collect::<Vec<[usize; 2]>>()
+        })
+        .collect::<Vec<Vec<[usize; 2]>>>();
+
+    print!("Force traits (e.g. \"assassin:4, brawler:2\"): ");
+    stdout().flush().unwrap();
+    input_text.clear();
+    stdin()
+        .read_line(&mut input_text)
+        .expect("failed to read input");
+    let trim = input_text.trim();
+    let forced_traits: Vec<[usize; 2]> = if trim.is_empty() {
+        vec![]
+    } else {
+        trim.split(",")
+            .map(|trait_str| {
+                let mut trait_parts = trait_str.split(":");
+                // [0] is the trait index, [1] is the minimum required
+                let force_trait = trait_parts
+                    .next()
+                    .expect("trait force missing name")
+                    .trim()
+                    .to_lowercase();
+
+                [
+                    current_set
+                        .traits
+                        .iter()
+                        .position(|tft_trait| tft_trait.name == force_trait)
+                        .expect("invalid trait name"),
+                    trait_parts
+                        .next()
+                        .expect("trait missing min number")
+                        .trim()
+                        .parse()
+                        .expect("could not parse number"),
+                ]
+            })
+            .collect()
+    };
+
+    print!("Force champs (e.g. \"leona, velkoz\"): ");
+    stdout().flush().unwrap();
+    input_text.clear();
+    stdin()
+        .read_line(&mut input_text)
+        .expect("failed to read input");
+    let trim = input_text.trim();
+
+    let forced_champs: Vec<usize> = if trim.is_empty() {
+        vec![]
+    } else {
+        trim.split(",")
+            .map(|champ_force| {
+                champs
+                    .iter()
+                    .position(|champ| {
+                        champ.name.to_lowercase() == champ_force.trim().to_lowercase().as_str()
+                    })
+                    .expect("invalid champ name")
+            })
+            .collect()
+    };
+
     // Log num comps and threads
+    let num_champs = champs.len();
     let num_combinations = n_choose_k(num_champs, num_units);
     let num_chunks = num_champs - num_units + 1;
     print!(
-        "Generating and analyzing {} comps with {} champs using {} threads\n+{}+\n|",
+        "Generating and analyzing {} comps based on {} champs and {} traits using {} threads\nForcing {} champs and {} traits\n+{}+\n|",
         num_combinations,
-        champ_forces.len(),
+        num_champs,
+        traits.len(),
         rayon::current_num_threads(),
-        "-".repeat(num_chunks)
+        forced_champs.len(),
+        forced_traits.len(),
+        "-".repeat(num_chunks),
     );
     stdout().flush().unwrap();
     let time_start = SystemTime::now();
@@ -287,25 +237,31 @@ fn main() {
             let k_sub_1 = num_units - 1;
             let n_sub_k = num_champs - num_units;
             let mut indices: Vec<usize> = (init_index..init_index + num_units).collect();
-            let mut min_heap: BinaryHeap<Reverse<CompSynergy>> = BinaryHeap::with_capacity(top_n);
+            let mut min_heap: BinaryHeap<Reverse<TeamComp>> = BinaryHeap::with_capacity(top_n);
 
             while indices[0] == init_index && indices[k_sub_1] < num_champs {
-                // Calculate the amount of active synergies
-                let synergy = calc_synergies(&indices, &champ_forces, calc_unique_synergies);
+                // Calculate the amount of active traits
+                let active_traits = calc_active_traits(
+                    &indices,
+                    &champ_traits,
+                    &traits,
+                    &forced_champs,
+                    &forced_traits,
+                );
 
                 // Add comp to top N
-                let min = min_heap.peek().map_or(0, |m| m.0.synergy);
+                let min = min_heap.peek().map_or(0, |m| m.0.active_traits);
                 if min_heap.len() == top_n {
-                    if synergy > min {
+                    if active_traits > min {
                         min_heap.pop();
-                        min_heap.push(Reverse(CompSynergy {
-                            synergy,
+                        min_heap.push(Reverse(TeamComp {
+                            active_traits,
                             indices: indices.clone(),
                         }));
                     }
-                } else if synergy >= min {
-                    min_heap.push(Reverse(CompSynergy {
-                        synergy,
+                } else if active_traits >= min {
+                    min_heap.push(Reverse(TeamComp {
+                        active_traits,
                         indices: indices.clone(),
                     }));
                 }
@@ -332,12 +288,48 @@ fn main() {
     top_n_comps.truncate(top_n);
 
     println!("|\nCompleted in {:?}", time_start.elapsed().unwrap());
-    for comp_synergy in top_n_comps {
-        println!("{}", comp_synergy.0);
+    for comp_traits in top_n_comps {
+        comp_traits.0.print(&champs);
     }
     print!("Press enter to continue...");
     stdout().flush().unwrap();
-    stdin().read(&mut [0]).unwrap();
+    stdin().read_exact(&mut [0]).unwrap();
+}
+
+fn calc_active_traits(
+    comp: &Vec<usize>,
+    champ_traits: &Vec<Vec<usize>>,
+    traits: &Vec<Vec<[usize; 2]>>,
+    forced_champs: &Vec<usize>,
+    forced_traits: &Vec<[usize; 2]>,
+) -> usize {
+    if !forced_champs.iter().all(|champ| comp.contains(champ)) {
+        return 0;
+    }
+
+    let mut trait_tally = vec![0usize; traits.len()];
+    for champ_index in comp {
+        for trait_idx in &champ_traits[*champ_index] {
+            trait_tally[*trait_idx] += 1;
+        }
+    }
+
+    for [trait_idx, min_tally] in forced_traits {
+        if trait_tally[*trait_idx] < *min_tally {
+            return 0;
+        }
+    }
+
+    let mut active_traits = 0usize;
+    for trait_idx in 0..traits.len() {
+        for effect in &traits[trait_idx] {
+            if effect[0] <= trait_tally[trait_idx] && trait_tally[trait_idx] <= effect[1] {
+                active_traits += effect[0];
+                break;
+            }
+        }
+    }
+    return active_traits;
 }
 
 fn n_choose_k(n: usize, k: usize) -> usize {
