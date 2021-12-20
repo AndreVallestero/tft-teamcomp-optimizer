@@ -8,7 +8,7 @@ use {
         cmp::Reverse,
         collections::{BTreeMap, BinaryHeap},
         fs::File,
-        io::{stdin, stdout, Read, Write, BufReader, BufWriter},
+        io::{stdin, stdout, BufReader, BufWriter, Read, Write},
         time::SystemTime,
     },
 };
@@ -51,8 +51,15 @@ struct TeamComp {
 
 impl TeamComp {
     fn print(self, champs: &Vec<&Champion>) {
-        let champ_names: Vec<String> = self.indices.iter().map(|i| return champs[*i].name.clone()).collect();
-        let mut repr = format!("{}: {:?}", self.active_traits, champ_names).replace("\"", "").replace("[", "").replace("\\", "");
+        let champ_names: Vec<String> = self
+            .indices
+            .iter()
+            .map(|i| return champs[*i].name.clone())
+            .collect();
+        let mut repr = format!("{}: {:?}", self.active_traits, champ_names)
+            .replace("\"", "")
+            .replace("[", "")
+            .replace("\\", "");
         repr.pop();
         println!("{}", repr);
     }
@@ -72,7 +79,9 @@ fn main() {
             .unwrap();
         let file = File::create("en_us.json").unwrap();
         let tft_string = tft_resp.into_string().unwrap();
-        BufWriter::new(file).write_all(tft_string.as_bytes()).unwrap();
+        BufWriter::new(file)
+            .write_all(tft_string.as_bytes())
+            .unwrap();
         serde_json::from_str(tft_string.as_str()).unwrap()
     };
 
