@@ -132,17 +132,16 @@ fn main() {
     let champ_traits = champs
         .iter()
         .map(|champ| {
-            champ
-                .traits
-                .iter()
-                .map(|champ_trait| {
-                    current_set
-                        .traits
-                        .iter()
-                        .position(|tft_trait| tft_trait.name == *champ_trait)
-                        .expect("no matching champ trait found")
-                })
-                .collect()
+            let mut traits_bits = 0;
+            for champ_trait in &champ.traits {
+                let trait_idx = current_set
+                    .traits
+                    .iter()
+                    .position(|tft_trait| tft_trait.name == *champ_trait)
+                    .expect("no matching champ trait found");
+                traits_bits += 1 << trait_idx;
+            }
+            traits_bits
         })
         .collect();
     let traits = current_set
@@ -305,9 +304,10 @@ fn main() {
     stdin().read_exact(&mut [0]).unwrap();
 }
 
+#[inline(always)]
 fn calc_active_traits(
     comp: &Vec<usize>,
-    champ_traits: &Vec<Vec<usize>>,
+    champ_traits: &Vec<i32>,
     traits: &Vec<Vec<[usize; 2]>>,
     forced_champs: &Vec<usize>,
     forced_traits: &Vec<[usize; 2]>,
@@ -316,10 +316,15 @@ fn calc_active_traits(
         return 0;
     }
 
-    let mut trait_tally = vec![0usize; traits.len()];
+    let len_traits = traits.len();
+    let mut trait_tally = vec![0usize; len_traits];
     for champ_index in comp {
-        for trait_idx in &champ_traits[*champ_index] {
-            trait_tally[*trait_idx] += 1;
+        // 32 bits, each one containing the trait state
+        let mut champ_trait_bits = champ_traits[*champ_index];
+        while 0 < champ_trait_bits {
+            let set_bit = champ_trait_bits & -champ_trait_bits;
+            champ_trait_bits ^= set_bit; // Unset bit
+            trait_tally[set_bit.trailing_zeros() as usize] += 1; // Turn bit into trait idx
         }
     }
 
@@ -338,7 +343,7 @@ fn calc_active_traits(
             }
         }
     }
-    return active_traits;
+    active_traits
 }
 
 fn n_choose_k(n: usize, k: usize) -> usize {
