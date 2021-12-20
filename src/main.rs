@@ -250,7 +250,7 @@ fn main() {
             let mut trait_tally = vec![0usize; traits.len()];
 
             while indices[0] == init_index && indices[k_sub_1] < num_champs {
-                // Calculate the amount of active traits
+                // HOT PATH, 99% OF RUNTIME! Calculate the amount of active traits 
                 trait_tally.fill(0);
                 let mut active_traits = 0usize;
                 if forced_champs.iter().all(|champ| indices.contains(champ)) {
