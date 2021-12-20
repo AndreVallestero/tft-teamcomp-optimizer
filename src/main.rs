@@ -129,7 +129,7 @@ fn main() {
         .iter()
         .filter(|champ| !champ.traits.is_empty() && !(exclude_5_costs && champ.cost > 4))
         .collect();
-    let champ_traits = champs
+    let champ_traits: Vec<Vec<usize>> = champs
         .iter()
         .map(|champ| {
             champ
@@ -247,16 +247,34 @@ fn main() {
             let n_sub_k = num_champs - num_units;
             let mut indices: Vec<usize> = (init_index..init_index + num_units).collect();
             let mut min_heap: BinaryHeap<Reverse<TeamComp>> = BinaryHeap::with_capacity(top_n);
+            let mut trait_tally = vec![0usize; traits.len()];
 
             while indices[0] == init_index && indices[k_sub_1] < num_champs {
                 // Calculate the amount of active traits
-                let active_traits = calc_active_traits(
-                    &indices,
-                    &champ_traits,
-                    &traits,
-                    &forced_champs,
-                    &forced_traits,
-                );
+                trait_tally.fill(0);
+                let mut active_traits = 0usize;
+                if forced_champs.iter().all(|champ| indices.contains(champ)) {
+                    for &champ_index in &indices {
+                        for trait_idx in &champ_traits[champ_index] {
+                            trait_tally[*trait_idx] += 1;
+                        }
+                    }
+                    if forced_traits
+                        .iter()
+                        .all(|[trait_idx, min_tally]| min_tally <= &trait_tally[*trait_idx])
+                    {
+                        for trait_idx in 0..traits.len() {
+                            for effect in &traits[trait_idx] {
+                                if effect[0] <= trait_tally[trait_idx]
+                                    && trait_tally[trait_idx] <= effect[1]
+                                {
+                                    active_traits += effect[0];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
 
                 // Add comp to top N
                 let min = min_heap.peek().map_or(0, |m| m.0.active_traits);
@@ -303,42 +321,6 @@ fn main() {
     print!("Press enter to continue...");
     stdout().flush().unwrap();
     stdin().read_exact(&mut [0]).unwrap();
-}
-
-fn calc_active_traits(
-    comp: &Vec<usize>,
-    champ_traits: &Vec<Vec<usize>>,
-    traits: &Vec<Vec<[usize; 2]>>,
-    forced_champs: &Vec<usize>,
-    forced_traits: &Vec<[usize; 2]>,
-) -> usize {
-    if !forced_champs.iter().all(|champ| comp.contains(champ)) {
-        return 0;
-    }
-
-    let mut trait_tally = vec![0usize; traits.len()];
-    for champ_index in comp {
-        for trait_idx in &champ_traits[*champ_index] {
-            trait_tally[*trait_idx] += 1;
-        }
-    }
-
-    for [trait_idx, min_tally] in forced_traits {
-        if trait_tally[*trait_idx] < *min_tally {
-            return 0;
-        }
-    }
-
-    let mut active_traits = 0usize;
-    for trait_idx in 0..traits.len() {
-        for effect in &traits[trait_idx] {
-            if effect[0] <= trait_tally[trait_idx] && trait_tally[trait_idx] <= effect[1] {
-                active_traits += effect[0];
-                break;
-            }
-        }
-    }
-    return active_traits;
 }
 
 fn n_choose_k(n: usize, k: usize) -> usize {
