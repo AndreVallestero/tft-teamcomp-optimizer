@@ -129,7 +129,7 @@ fn main() {
         .iter()
         .filter(|champ| !champ.traits.is_empty() && !(exclude_5_costs && champ.cost > 4))
         .collect();
-    let champ_traits = champs
+    let champ_traits: Vec<i32> = champs
         .iter()
         .map(|champ| {
             let mut traits_bits = 0;
@@ -246,16 +246,38 @@ fn main() {
             let n_sub_k = num_champs - num_units;
             let mut indices: Vec<usize> = (init_index..init_index + num_units).collect();
             let mut min_heap: BinaryHeap<Reverse<TeamComp>> = BinaryHeap::with_capacity(top_n);
+            let mut trait_tally = vec![0usize; traits.len()];
 
             while indices[0] == init_index && indices[k_sub_1] < num_champs {
-                // Calculate the amount of active traits
-                let active_traits = calc_active_traits(
-                    &indices,
-                    &champ_traits,
-                    &traits,
-                    &forced_champs,
-                    &forced_traits,
-                );
+                // HOT PATH! Calculate the amount of active traits 
+                trait_tally.fill(0);
+                let mut active_traits = 0usize;
+                if forced_champs.iter().all(|champ| indices.contains(champ)) {
+                    for &champ_index in &indices {
+                        // 32 bits, each one containing the trait state
+                        let mut champ_trait_bits = champ_traits[champ_index];
+                        while 0 < champ_trait_bits {
+                            let set_bit = champ_trait_bits & -champ_trait_bits;
+                            champ_trait_bits ^= set_bit; // Unset bit
+                            trait_tally[set_bit.trailing_zeros() as usize] += 1; // Bit to trait idx
+                        }
+                    }
+                    if forced_traits
+                        .iter()
+                        .all(|[trait_idx, min_tally]| min_tally <= &trait_tally[*trait_idx])
+                    {
+                        for trait_idx in 0..traits.len() {
+                            for effect in &traits[trait_idx] {
+                                if effect[0] <= trait_tally[trait_idx]
+                                    && trait_tally[trait_idx] <= effect[1]
+                                {
+                                    active_traits += effect[0];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
 
                 // Add comp to top N
                 let min = min_heap.peek().map_or(0, |m| m.0.active_traits);
@@ -302,48 +324,6 @@ fn main() {
     print!("Press enter to continue...");
     stdout().flush().unwrap();
     stdin().read_exact(&mut [0]).unwrap();
-}
-
-#[inline(always)]
-fn calc_active_traits(
-    comp: &Vec<usize>,
-    champ_traits: &Vec<i32>,
-    traits: &Vec<Vec<[usize; 2]>>,
-    forced_champs: &Vec<usize>,
-    forced_traits: &Vec<[usize; 2]>,
-) -> usize {
-    if !forced_champs.iter().all(|champ| comp.contains(champ)) {
-        return 0;
-    }
-
-    let len_traits = traits.len();
-    let mut trait_tally = vec![0usize; len_traits];
-    for champ_index in comp {
-        // 32 bits, each one containing the trait state
-        let mut champ_trait_bits = champ_traits[*champ_index];
-        while 0 < champ_trait_bits {
-            let set_bit = champ_trait_bits & -champ_trait_bits;
-            champ_trait_bits ^= set_bit; // Unset bit
-            trait_tally[set_bit.trailing_zeros() as usize] += 1; // Turn bit into trait idx
-        }
-    }
-
-    for [trait_idx, min_tally] in forced_traits {
-        if trait_tally[*trait_idx] < *min_tally {
-            return 0;
-        }
-    }
-
-    let mut active_traits = 0usize;
-    for trait_idx in 0..traits.len() {
-        for effect in &traits[trait_idx] {
-            if effect[0] <= trait_tally[trait_idx] && trait_tally[trait_idx] <= effect[1] {
-                active_traits += effect[0];
-                break;
-            }
-        }
-    }
-    active_traits
 }
 
 fn n_choose_k(n: usize, k: usize) -> usize {
