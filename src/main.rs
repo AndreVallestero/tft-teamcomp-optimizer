@@ -185,7 +185,7 @@ fn main() {
                     current_set
                         .traits
                         .iter()
-                        .position(|tft_trait| tft_trait.name.to_lowercase() == force_trait)
+                        .position(|tft_trait| tft_trait.name.trim().to_lowercase() == force_trait)
                         .expect(format!("invalid trait name {}", force_trait).as_str()),
                     trait_parts
                         .next()
