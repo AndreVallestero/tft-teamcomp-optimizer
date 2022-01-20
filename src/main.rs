@@ -50,16 +50,16 @@ struct TeamComp {
 }
 
 impl TeamComp {
-    fn print(self, champs: &Vec<&Champion>) {
+    fn print(self, champs: &[&Champion]) {
         let champ_names: Vec<String> = self
             .indices
             .iter()
-            .map(|i| return champs[*i].name.clone())
+            .map(|i| champs[*i].name.clone())
             .collect();
         let mut repr = format!("{}: {:?}", self.active_traits, champ_names)
-            .replace("\"", "")
-            .replace("[", "")
-            .replace("\\", "");
+            .replace('\"', "")
+            .replace('[', "")
+            .replace('\\', "");
         repr.pop();
         println!("{}", repr);
     }
@@ -127,7 +127,7 @@ fn main() {
     let champs: Vec<&Champion> = current_set
         .champions
         .iter()
-        .filter(|champ| !champ.traits.is_empty() && !(exclude_5_costs && champ.cost > 4))
+        .filter(|champ| !(champ.traits.is_empty() || exclude_5_costs && champ.cost > 4))
         .collect();
     let champ_traits: Vec<Vec<usize>> = champs
         .iter()
@@ -171,9 +171,9 @@ fn main() {
     let forced_traits: Vec<[usize; 2]> = if trim.is_empty() {
         vec![]
     } else {
-        trim.split(",")
+        trim.split(',')
             .map(|trait_str| {
-                let mut trait_parts = trait_str.split(":");
+                let mut trait_parts = trait_str.split(':');
                 // [0] is the trait index, [1] is the minimum required
                 let force_trait = trait_parts
                     .next()
@@ -186,7 +186,44 @@ fn main() {
                         .traits
                         .iter()
                         .position(|tft_trait| tft_trait.name.trim().to_lowercase() == force_trait)
-                        .expect(format!("invalid trait name {}", force_trait).as_str()),
+                        .unwrap_or_else(|| panic!("invalid trait name {}", force_trait)),
+                    trait_parts
+                        .next()
+                        .expect("trait missing min number")
+                        .trim()
+                        .parse()
+                        .expect("could not parse number"),
+                ]
+            })
+            .collect()
+    };
+
+    print!("Trait bonuses (e.g. \"assassin:2, brawler:1\"): ");
+    stdout().flush().unwrap();
+    input_text.clear();
+    stdin()
+        .read_line(&mut input_text)
+        .expect("failed to read input");
+    let trim = input_text.trim();
+    let trait_bonus: Vec<[usize; 2]> = if trim.is_empty() {
+        vec![]
+    } else {
+        trim.split(',')
+            .map(|trait_str| {
+                let mut trait_parts = trait_str.split(':');
+                // [0] is the trait index, [1] is the minimum required
+                let force_trait = trait_parts
+                    .next()
+                    .expect("trait force missing name")
+                    .trim()
+                    .to_lowercase();
+
+                [
+                    current_set
+                        .traits
+                        .iter()
+                        .position(|tft_trait| tft_trait.name.trim().to_lowercase() == force_trait)
+                        .unwrap_or_else(|| panic!("invalid trait name {}", force_trait)),
                     trait_parts
                         .next()
                         .expect("trait missing min number")
@@ -209,7 +246,7 @@ fn main() {
     let forced_champs: Vec<usize> = if trim.is_empty() {
         vec![]
     } else {
-        trim.split(",")
+        trim.split(',')
             .map(|champ_force| {
                 champs
                     .iter()
@@ -226,13 +263,14 @@ fn main() {
     let num_combinations = n_choose_k(num_champs, num_units);
     let num_chunks = num_champs - num_units + 1;
     print!(
-        "Generating and analyzing {} comps based on {} champs and {} traits using {} threads\nForcing {} champs and {} traits\n+{}+\n|",
+        "Generating and analyzing {} comps based on {} champs and {} traits using {} threads\nForcing {} champs and {} traits with {} bonuses\n+{}+\n|",
         num_combinations,
         num_champs,
         traits.len(),
         rayon::current_num_threads(),
         forced_champs.len(),
         forced_traits.len(),
+        trait_bonus.len(),
         "-".repeat(num_chunks),
     );
     stdout().flush().unwrap();
@@ -247,11 +285,15 @@ fn main() {
             let n_sub_k = num_champs - num_units;
             let mut indices: Vec<usize> = (init_index..init_index + num_units).collect();
             let mut min_heap: BinaryHeap<Reverse<TeamComp>> = BinaryHeap::with_capacity(top_n);
-            let mut trait_tally = vec![0usize; traits.len()];
+            let mut trait_tally_base = vec![0usize; traits.len()];
+            for [trait_idx, bonus] in &trait_bonus {
+                trait_tally_base[*trait_idx] += bonus;
+            }
+            let mut trait_tally = trait_tally_base.clone();
 
             while indices[0] == init_index && indices[k_sub_1] < num_champs {
                 // HOT PATH, 99% OF RUNTIME! Calculate the amount of active traits 
-                trait_tally.fill(0);
+                trait_tally.clone_from(&trait_tally_base);
                 let mut active_traits = 0usize;
                 if forced_champs.iter().all(|champ| indices.contains(champ)) {
                     for &champ_index in &indices {
