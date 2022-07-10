@@ -1,5 +1,4 @@
 #![feature(map_first_last)]
-#![feature(bool_to_option)]
 
 use {
     rayon::prelude::*,
@@ -124,11 +123,12 @@ fn main() {
 
     // Format data
     let (_, current_set) = tft.sets.last_key_value().unwrap();
-    let champs: Vec<&Champion> = current_set
+    let mut champs: Vec<&Champion> = current_set
         .champions
         .iter()
         .filter(|champ| !(champ.traits.is_empty() || exclude_5_costs && champ.cost > 4))
         .collect();
+	champs.sort_by(|a, b| a.cost.cmp(&b.cost));
     let champ_traits: Vec<Vec<usize>> = champs
         .iter()
         .map(|champ| {
