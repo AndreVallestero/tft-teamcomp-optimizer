@@ -248,12 +248,13 @@ fn main() {
     } else {
         trim.split(',')
             .map(|champ_force| {
+                let champ_force_name = champ_force.trim().to_lowercase();
                 champs
                     .iter()
                     .position(|champ| {
-                        champ.name.to_lowercase() == champ_force.trim().to_lowercase().as_str()
+                        champ.name.to_lowercase() == champ_force_name
                     })
-                    .expect("invalid champ name")
+                    .expect(format!("invalid champ name: {}", champ_force_name).as_str())
             })
             .collect()
     };
